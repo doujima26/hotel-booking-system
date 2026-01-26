@@ -1,43 +1,55 @@
-CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,               -- Khóa chính, tự tăng
-    name VARCHAR(100) NOT NULL,                -- Tên người dùng
-    email VARCHAR(150) NOT NULL UNIQUE,        -- Email đăng nhập (không trùng)
-    phone_number VARCHAR(20),                  -- Số điện thoại
-    password_hash TEXT NOT NULL,               -- Mật khẩu đã mã hóa
-    role VARCHAR(20) NOT NULL                  -- Vai trò người dùng
-        CHECK (role IN ('admin', 'staff', 'user')),
-    dob DATE,                                  -- Ngày sinh
-    is_active BOOLEAN DEFAULT TRUE,             -- Trạng thái tài khoản
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Ngày tạo tài khoản
+CREATE TABLE hotel (
+    hotel_id SERIAL PRIMARY KEY,
+    city VARCHAR(100) NOT NULL UNIQUE,        -- Ha Noi, Tuyen Quang, TP HCM
+    admin_register_key VARCHAR(100) NOT NULL,
+    staff_register_key VARCHAR(100) NOT NULL
 );
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone_number VARCHAR(20),
+    password_hash TEXT NOT NULL,
+    role VARCHAR(20) NOT NULL
+        CHECK (role IN ('admin', 'staff', 'user')),
+    dob DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    hotel_id INT,                            -- chi nhanh (NULL voi user)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    FOREIGN KEY (hotel_id)
+        REFERENCES hotel(hotel_id)
+);
 CREATE TABLE staff (
-    staff_id SERIAL PRIMARY KEY,     -- Khóa chính nhân viên
-    user_id INT NOT NULL UNIQUE,     -- Mỗi staff gắn với đúng 1 user
-    position VARCHAR(100),           -- Chức vụ
+    staff_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    position VARCHAR(100),
 
     FOREIGN KEY (user_id)
         REFERENCES users(user_id)
         ON DELETE CASCADE
 );
-
 CREATE TABLE room (
-    room_id SERIAL PRIMARY KEY,          -- Khóa chính phòng
-    room_number VARCHAR(20) NOT NULL UNIQUE, -- Số phòng
-    room_type VARCHAR(255) NOT NULL,     -- Loại phòng (số người + số giường + loại giường)
-    price NUMERIC(12,2) NOT NULL          -- Giá phòng
-        CHECK (price >= 0),
-    status VARCHAR(20) NOT NULL           -- Trạng thái phòng
-        CHECK (status IN ('available', 'maintenance', 'inactive'))
-);
+    room_id SERIAL PRIMARY KEY,
+    hotel_id INT NOT NULL,
+    room_number VARCHAR(20) NOT NULL,
+    room_type VARCHAR(255) NOT NULL,
+    price NUMERIC(12,2) NOT NULL CHECK (price >= 0),
+    status VARCHAR(20) NOT NULL
+        CHECK (status IN ('available', 'maintenance', 'inactive')),
 
+    FOREIGN KEY (hotel_id)
+        REFERENCES hotel(hotel_id),
+
+    UNIQUE (hotel_id, room_number)   -- mỗi chi nhánh có số phòng riêng
+);
 CREATE TABLE booking (
-    booking_id SERIAL PRIMARY KEY,        -- Khóa chính đặt phòng
-    user_id INT NOT NULL,                 -- Khách hàng đặt phòng
-    room_id INT NOT NULL,                 -- Phòng được đặt
-    check_in DATE NOT NULL,               -- Ngày nhận phòng
-    check_out DATE NOT NULL,              -- Ngày trả phòng
-    status VARCHAR(20) NOT NULL           -- Trạng thái booking
+    booking_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    room_id INT NOT NULL,
+    check_in DATE NOT NULL,
+    check_out DATE NOT NULL,
+    status VARCHAR(20) NOT NULL
         CHECK (status IN (
             'pending',
             'confirmed',
@@ -53,39 +65,30 @@ CREATE TABLE booking (
     FOREIGN KEY (room_id)
         REFERENCES room(room_id),
 
-    CHECK (check_out > check_in)           -- Ràng buộc ngày hợp lệ
+    CHECK (check_out > check_in)
 );
-
 CREATE TABLE invoice (
-    invoice_id SERIAL PRIMARY KEY,        -- Khóa chính hóa đơn
-    booking_id INT NOT NULL UNIQUE,       -- Mỗi booking có 1 hóa đơn
-    total_amount NUMERIC(12,2) NOT NULL   -- Tổng tiền
-        CHECK (total_amount >= 0),
-    status VARCHAR(20) NOT NULL           -- Trạng thái hóa đơn
+    invoice_id SERIAL PRIMARY KEY,
+    booking_id INT NOT NULL UNIQUE,
+    total_amount NUMERIC(12,2) NOT NULL CHECK (total_amount >= 0),
+    status VARCHAR(20) NOT NULL
         CHECK (status IN ('pending', 'confirmed')),
-    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời điểm tạo hóa đơn
+    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (booking_id)
         REFERENCES booking(booking_id)
         ON DELETE CASCADE
 );
-
 CREATE TABLE staff_schedule (
-    schedule_id SERIAL PRIMARY KEY,   -- Khóa chính lịch
-    staff_id INT NOT NULL,             -- Nhân viên
-    work_date DATE NOT NULL,           -- Ngày làm việc
-    time_slot VARCHAR(50) NOT NULL,    -- Ca làm (vd: 06:45-09:30)
+    schedule_id SERIAL PRIMARY KEY,
+    staff_id INT NOT NULL,
+    work_date DATE NOT NULL,
+    time_slot VARCHAR(50) NOT NULL,
 
     FOREIGN KEY (staff_id)
         REFERENCES staff(staff_id)
         ON DELETE CASCADE,
 
-    UNIQUE (staff_id, work_date, time_slot) -- Không trùng ca
+    UNIQUE (staff_id, work_date, time_slot)
 );
-
-
-
-
-
-
 
