@@ -92,3 +92,40 @@ CREATE TABLE staff_schedule (
     UNIQUE (staff_id, work_date, time_slot)
 );
 
+-- Sửa trạng thái phòng 
+SELECT conname
+FROM pg_constraint
+WHERE conrelid = 'room'::regclass
+AND contype = 'c';
+
+ALTER TABLE room
+DROP CONSTRAINT room_status_check;
+
+ALTER TABLE room
+ADD CONSTRAINT room_status_check
+CHECK (status IN ('available', 'reserved'));
+
+UPDATE room
+SET status = 'available'
+WHERE status NOT IN ('available', 'reserved');
+
+SELECT conname, pg_get_constraintdef(oid)
+FROM pg_constraint
+WHERE conrelid = 'room'::regclass;
+
+DELETE FROM staff_schedule;
+DELETE FROM staff;
+DELETE FROM invoice;
+DELETE FROM booking;
+DELETE FROM room;
+DELETE FROM users;
+DELETE FROM hotel;
+
+SELECT * FROM hotel;
+SELECT * FROM room;
+SELECT * FROM users;
+SELECT * FROM booking;
+SELECT * FROM invoice;
+
+
+

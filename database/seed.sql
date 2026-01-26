@@ -1,73 +1,97 @@
-INSERT INTO users (name, email, phone_number, password_hash, role, dob)
+-- =========================
+-- SEED DATA FOR HOTEL BOOKING SYSTEM
+-- =========================
+
+-- HOTEL (CHI NHÁNH)
+INSERT INTO hotel (city, admin_register_key, staff_register_key)
 VALUES
--- Admin
-('Quản lý hệ thống', 'admin@hotel.com', '0900000001', 'hashed_password', 'admin', '1990-01-01'),
+    ('Ha Noi', 'HN_ADMIN_KEY_2024', 'HN_STAFF_KEY_2024'),
+    ('Tuyen Quang', 'TQ_ADMIN_KEY_2024', 'TQ_STAFF_KEY_2024'),
+    ('Ho Chi Minh', 'HCM_ADMIN_KEY_2024', 'HCM_STAFF_KEY_2024');
 
--- Staff
-('Nguyễn Doanh', 'doanh@hotel.com', '0900000002', 'hashed_password', 'staff', '1998-05-20'),
-('Hoàng Dung', 'dung@hotel.com', '0900000003', 'hashed_password', 'staff', '1999-03-15'),
+-- ADMIN Ha Noi
+INSERT INTO users (name, email, phone_number, password_hash, role, hotel_id)
+VALUES (
+    'Admin Ha Noi',
+    'admin_hn@gmail.com',
+    '0900000001',
+    'hashed_password',
+    'admin',
+    (SELECT hotel_id FROM hotel WHERE city = 'Ha Noi')
+);
 
--- Customer
-('Minh Hiếu', 'hieu@gmail.com', '0900000004', 'hashed_password', 'user', '2001-07-10'),
-('Hoàng Anh', 'anh@gmail.com', '0900000005', 'hashed_password', 'user', '2000-11-25');
+-- STAFF Ha Noi
+INSERT INTO users (name, email, phone_number, password_hash, role, hotel_id)
+VALUES (
+    'Staff Ha Noi',
+    'staff_hn@gmail.com',
+    '0900000002',
+    'hashed_password',
+    'staff',
+    (SELECT hotel_id FROM hotel WHERE city = 'Ha Noi')
+);
 
+-- USER (khach hang – khong gan chi nhanh)
+INSERT INTO users (name, email, phone_number, password_hash, role)
+VALUES (
+    'Nguyen Van A',
+    'user1@gmail.com',
+    '0900000003',
+    'hashed_password',
+    'user'
+);
+
+-- STAFF
 INSERT INTO staff (user_id, position)
-VALUES
-(2, 'Lễ tân'),
-(3, 'Nhân viên hỗ trợ');
+VALUES (
+    (SELECT user_id FROM users WHERE email = 'staff_hn@gmail.com'),
+    'Le tan'
+);
 
-INSERT INTO room (room_number, room_type, price, status)
+--ROOM
+INSERT INTO room (hotel_id, room_number, room_type, price, status)
 VALUES
-('101', 'VIP – 2 người – 1 giường đôi', 2500000, 'available'),
-('102', 'Standard – 4 người – 2 giường đơn', 1500000, 'available'),
-('201', 'Deluxe – 2 người – 1 giường king', 3000000, 'available'),
-('202', 'VIP – 3 người – 2 giường đơn', 2800000, 'maintenance');
+-- Ha Noi
+((SELECT hotel_id FROM hotel WHERE city = 'Ha Noi'), '101', '2 nguoi - 1 giuong doi', 500000, 'available'),
+((SELECT hotel_id FROM hotel WHERE city = 'Ha Noi'), '102', '2 nguoi - 2 giuong don', 600000, 'reserved'),
+((SELECT hotel_id FROM hotel WHERE city = 'Ha Noi'), '201', '4 nguoi - 2 giuong doi', 900000, 'available'),
 
+-- Tuyen Quang
+((SELECT hotel_id FROM hotel WHERE city = 'Tuyen Quang'), '101', '2 nguoi - 1 giuong doi', 400000, 'available'),
+((SELECT hotel_id FROM hotel WHERE city = 'Tuyen Quang'), '102', '2 nguoi - 2 giuong don', 500000, 'reserved'),
+
+-- Ho Chi Minh
+((SELECT hotel_id FROM hotel WHERE city = 'Ho Chi Minh'), '301', '2 nguoi - 1 giuong doi', 800000, 'available'),
+((SELECT hotel_id FROM hotel WHERE city = 'Ho Chi Minh'), '302', '4 nguoi - 2 giuong doi', 1200000, 'reserved');
+
+--BOOKING
 INSERT INTO booking (user_id, room_id, check_in, check_out, status)
-VALUES
-(4, 1, '2026-02-01', '2026-02-03', 'pending'),
-(5, 2, '2026-02-05', '2026-02-07', 'confirmed');
-
+VALUES (
+    (SELECT user_id FROM users WHERE email = 'user1@gmail.com'),
+    (SELECT room_id FROM room WHERE room_number = '101' AND hotel_id = (SELECT hotel_id FROM hotel WHERE city = 'Ha Noi')),
+    '2026-02-01',
+    '2026-02-03',
+    'confirmed'
+);
+-- INVOICE
 INSERT INTO invoice (booking_id, total_amount, status)
-VALUES
-(1, 5000000, 'pending'),
-(2, 3000000, 'confirmed');
+VALUES (
+    (SELECT booking_id FROM booking LIMIT 1),
+    1600000,
+    'confirmed'
+);
 
+-- STAFF SCHEDULE
 INSERT INTO staff_schedule (staff_id, work_date, time_slot)
 VALUES
--- Nguyễn Doanh
-(1, '2026-02-01', '06:45-09:30'),
-(1, '2026-02-02', '09:30-12:00'),
-
--- Hoàng Dung
-(2, '2026-02-01', '12:00-15:30'),
-(2, '2026-02-02', '15:30-19:30');
-
-
-SELECT * FROM users;
-SELECT * FROM staff;
-SELECT * FROM room;
-SELECT * FROM booking;
-SELECT * FROM invoice;
-SELECT * FROM staff_schedule;
-
-
-SELECT
-    u.name AS customer_name,
-    r.room_number,
-    r.room_type,
-    b.check_in,
-    b.check_out,
-    i.total_amount,
-    i.status AS invoice_status
-FROM invoice i
-JOIN booking b ON i.booking_id = b.booking_id
-JOIN users u ON b.user_id = u.user_id
-JOIN room r ON b.room_id = r.room_id;
-
-
-
-
-
-
+(
+    (SELECT staff_id FROM staff LIMIT 1),
+    '2026-02-01',
+    '06:00-14:00'
+),
+(
+    (SELECT staff_id FROM staff LIMIT 1),
+    '2026-02-02',
+    '14:00-22:00'
+);
 
