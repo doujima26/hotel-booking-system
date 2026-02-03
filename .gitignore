@@ -1,9 +1,15 @@
 # =====================
-# BACKEND (Python)
+# PYTHON
+# =====================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# =====================
+# BACKEND
 # =====================
 backend/venv/
-backend/__pycache__/
-backend/*.pyc
 backend/.env
 
 # =====================
