@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from app.core.database import engine
 
+from app.routers import auth
+
 app = FastAPI(title="Hotel Booking API")
+app.include_router(auth.router)
 
 @app.get("/")
 def root():

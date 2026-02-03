@@ -15,9 +15,10 @@ def register_user(db: Session, user_data: UserCreate):
             detail="Email da ton tai"
         )
 
+    # xu ly theo role
     role = user_data.role
 
-    # user (khach hang)
+    # user
     if role == "user":
         hotel_id = None
 
@@ -42,7 +43,7 @@ def register_user(db: Session, user_data: UserCreate):
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Ma xac thuc admin khong hop le"
                 )
-        else:
+        else: # staff
             if user_data.secret_key != hotel.staff_register_key:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
@@ -62,12 +63,13 @@ def register_user(db: Session, user_data: UserCreate):
         name=user_data.name,
         email=user_data.email,
         phone_number=user_data.phone_number,
-        password_hash=user_data.password,  # se hash o buoc tiep theo
+        password_hash=user_data.password,
         role=role,
         dob=user_data.dob,
         hotel_id=hotel_id
     )
 
+    # tao user trong db
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
