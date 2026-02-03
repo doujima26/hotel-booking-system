@@ -113,6 +113,7 @@ SELECT conname, pg_get_constraintdef(oid)
 FROM pg_constraint
 WHERE conrelid = 'room'::regclass;
 
+-- Xoá dữ liệu để test lại
 DELETE FROM staff_schedule;
 DELETE FROM staff;
 DELETE FROM invoice;
@@ -127,5 +128,6 @@ SELECT * FROM users;
 SELECT * FROM booking;
 SELECT * FROM invoice;
 
-
+-- RS id
+TRUNCATE TABLE hotel RESTART IDENTITY CASCADE;
 
