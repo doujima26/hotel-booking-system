@@ -4,7 +4,9 @@ from fastapi import HTTPException, status
 from app.models.user import User
 from app.models.hotel import Hotel
 from app.schemas.user import UserCreate
-
+from app.schemas.user import UserLogin
+from app.core.security import hash_password
+from app.core.security import verify_password, create_access_token
 
 def register_user(db: Session, user_data: UserCreate):
     # check email ton tai
@@ -63,7 +65,7 @@ def register_user(db: Session, user_data: UserCreate):
         name=user_data.name,
         email=user_data.email,
         phone_number=user_data.phone_number,
-        password_hash=user_data.password,
+        password_hash = hash_password(user_data.password),
         role=role,
         dob=user_data.dob,
         hotel_id=hotel_id
@@ -75,3 +77,30 @@ def register_user(db: Session, user_data: UserCreate):
     db.refresh(new_user)
 
     return new_user
+
+
+def login_user(db: Session, user_data: UserLogin):
+    # Tim user theo email
+    user = db.query(User).filter(User.email == user_data.email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email hoac mat khau khong dung"
+        )
+
+    # Kiem tra mat khau
+    if not verify_password(user_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email hoac mat khau khong dung"
+        )
+
+    # Tao access token
+    access_token = create_access_token(
+        data={"sub": str(user.user_id), "role": user.role}
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
