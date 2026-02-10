@@ -7,6 +7,12 @@ from jose import jwt
 
 from app.core.config import settings
 
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/login"
+)
+
 #tao context de xu ly hash mat khau
 pwd_context = CryptContext(
     schemes=["bcrypt"],   #thuat toan hash su dung
