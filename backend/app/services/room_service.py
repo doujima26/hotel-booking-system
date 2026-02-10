@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from app.models.room import Room
 from app.schemas.room import RoomCreate
 from app.models.user import User
+from typing import List
 
 # Xu ly nghiep vu tao phong moi,Chi admin moi duoc phep goi ham nay
 def create_room_service(
@@ -45,3 +46,8 @@ def create_room_service(
     db.refresh(new_room)
 
     return new_room
+
+# Ham lay danh sach phong theo chi nhanh
+def get_rooms_by_hotel_service(db: Session, hotel_id: int) -> List[Room]:
+    rooms = db.query(Room).filter(Room.hotel_id == hotel_id).all()
+    return rooms
