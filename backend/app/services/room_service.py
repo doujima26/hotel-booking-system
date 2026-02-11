@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 
 from app.models.room import Room
 from app.schemas.room import RoomCreate
+from app.schemas.room import RoomUpdate
 from app.models.user import User
 from typing import List
 
@@ -51,3 +52,68 @@ def create_room_service(
 def get_rooms_by_hotel_service(db: Session, hotel_id: int) -> List[Room]:
     rooms = db.query(Room).filter(Room.hotel_id == hotel_id).all()
     return rooms
+
+# Ham cap nhat thong tin phong
+def update_room_service(
+    db: Session,
+    room_id: int,
+    room_data: RoomUpdate,
+    current_user: User
+):
+    # Chi admin duoc phep cap nhat phong
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Chi admin moi duoc phep cap nhat phong"
+        )
+
+    # Tim phong theo room_id
+    room = db.query(Room).filter(Room.room_id == room_id).first()
+    if not room:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Khong tim thay phong"
+        )
+
+    # Cap nhat cac truong duoc gui len
+    if room_data.room_number is not None:
+        room.room_number = room_data.room_number
+
+    if room_data.room_type is not None:
+        room.room_type = room_data.room_type
+
+    if room_data.price is not None:
+        room.price = room_data.price
+
+    if room_data.status is not None:
+        room.status = room_data.status
+
+    db.commit()
+    db.refresh(room)
+
+    return room
+
+# Ham xoa phong
+def delete_room_service(
+    db: Session,
+    room_id: int,
+    current_user: User
+):
+    # Chi admin duoc phep xoa phong
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Chi admin moi duoc phep xoa phong"
+        )
+
+    room = db.query(Room).filter(Room.room_id == room_id).first()
+    if not room:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Khong tim thay phong"
+        )
+
+    db.delete(room)
+    db.commit()
+
+    return {"message": "Xoa phong thanh cong"}
