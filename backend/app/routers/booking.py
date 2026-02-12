@@ -8,6 +8,8 @@ from app.core.dependencies import get_current_user
 from app.schemas.booking import BookingCreate, BookingResponse
 from app.services.booking_service import create_booking_service, get_user_bookings_service
 from app.models.user import User
+from app.core.permissions import require_staff_or_admin
+from app.services.booking_service import check_in_service, check_out_service
 
 router = APIRouter(
     prefix="/bookings",
@@ -28,3 +30,23 @@ def create_booking(
         booking_data.check_out,
         current_user
     )
+
+#API check in cho khach hang
+@router.put("/{booking_id}/check-in", response_model=BookingResponse)
+def check_in(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin)
+):
+
+    return check_in_service(db, booking_id, current_user)
+
+#API check out cho khach hang
+@router.put("/{booking_id}/check-out", response_model=BookingResponse)
+def check_out(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin)
+):
+
+    return check_out_service(db, booking_id, current_user)
