@@ -22,9 +22,9 @@ def get_my_invoices(
 
 #API xac nhan hoa don
 @router.put("/{invoice_id}/confirm", response_model=InvoiceResponse)
-def confirm_invoice(
+async def confirm_invoice(
     invoice_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_staff_or_admin)
 ):
-    return confirm_invoice_service(db, invoice_id, current_user)
+    return await confirm_invoice_service(db, invoice_id, current_user)

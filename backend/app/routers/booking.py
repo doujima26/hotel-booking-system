@@ -6,7 +6,7 @@ from typing import List
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.schemas.booking import BookingCreate, BookingResponse
-from app.services.booking_service import create_booking_service, get_user_bookings_service
+from app.services.booking_service import create_booking_service
 from app.models.user import User
 from app.core.permissions import require_staff_or_admin
 from app.services.booking_service import check_in_service, check_out_service

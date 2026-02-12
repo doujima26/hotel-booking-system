@@ -142,3 +142,11 @@ DROP CONSTRAINT room_status_check;
 ALTER TABLE room
 ADD CONSTRAINT room_status_check
 CHECK (status IN ('available', 'reserved', 'occupied'));
+
+--sua trang thai hoa don
+ALTER TABLE invoice
+DROP CONSTRAINT invoice_status_check;
+
+ALTER TABLE invoice
+ADD CONSTRAINT invoice_status_check
+CHECK (status IN ('pending', 'paid', 'cancelled'));
