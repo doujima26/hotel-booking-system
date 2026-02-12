@@ -1,11 +1,13 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import date
+from typing import List
 
 from app.models.booking import Booking
 from app.models.room import Room
 from app.models.invoice import Invoice
 from app.models.user import User
+from app.models.hotel import Hotel
 
 #Xu ly nghiep vu dat phong, tao booking va invoice trong cung mot transaction
 def create_booking_service(
@@ -76,3 +78,15 @@ def create_booking_service(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Loi he thong khi dat phong"
         )
+
+# Ham lay danh sach booking cua nguoi dung
+def get_user_bookings_service(db: Session, user_id: int) -> List[Booking]:
+
+    bookings = (
+        db.query(Booking)
+        .filter(Booking.user_id == user_id)
+        .order_by(Booking.created_at.desc())
+        .all()
+    )
+
+    return bookings

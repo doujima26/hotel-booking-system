@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import date
+from typing import List
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.schemas.booking import BookingCreate, BookingResponse
-from app.services.booking_service import create_booking_service
+from app.services.booking_service import create_booking_service, get_user_bookings_service
 from app.models.user import User
 
 router = APIRouter(
@@ -27,3 +28,12 @@ def create_booking(
         booking_data.check_out,
         current_user
     )
+
+#API lay danh sach booking cua nguoi dung dang nhap
+@router.get("/me", response_model=List[BookingResponse])
+def get_my_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    return get_user_bookings_service(db, current_user.user_id)
