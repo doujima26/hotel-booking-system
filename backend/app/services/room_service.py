@@ -5,7 +5,11 @@ from app.models.room import Room
 from app.schemas.room import RoomCreate
 from app.schemas.room import RoomUpdate
 from app.models.user import User
+from app.models.booking import Booking
 from typing import List
+
+from datetime import date
+from sqlalchemy import and_, not_, exists
 
 # Xu ly nghiep vu tao phong moi,Chi admin moi duoc phep goi ham nay
 def create_room_service(
@@ -117,3 +121,28 @@ def delete_room_service(
     db.commit()
 
     return {"message": "Xoa phong thanh cong"}
+
+# Ham lay danh sach phong trong theo chi nhanh va khoang thoi gian
+def get_available_rooms_service(
+    db: Session,
+    hotel_id: int,
+    check_in: date,
+    check_out: date
+) -> List[Room]:
+
+    # Subquery kiem tra phong bi trung lich
+    overlapping_subquery = db.query(Booking).filter(
+        Booking.room_id == Room.room_id,
+        Booking.status.in_(["confirmed", "checked_in"]),
+        Booking.check_in < check_out,
+        Booking.check_out > check_in
+    )
+
+    # Lay phong thuoc chi nhanh va khong ton tai booking trung
+    rooms = db.query(Room).filter(
+        Room.hotel_id == hotel_id,
+        Room.status == "available",
+        ~overlapping_subquery.exists()
+    ).all()
+
+    return rooms

@@ -131,3 +131,14 @@ SELECT * FROM invoice;
 -- RS id
 TRUNCATE TABLE hotel RESTART IDENTITY CASCADE;
 
+-- Thay doi trang thai phong
+SELECT conname
+FROM pg_constraint
+WHERE conrelid = 'room'::regclass;
+
+ALTER TABLE room
+DROP CONSTRAINT room_status_check;
+
+ALTER TABLE room
+ADD CONSTRAINT room_status_check
+CHECK (status IN ('available', 'reserved', 'occupied'));

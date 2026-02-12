@@ -9,6 +9,10 @@ from app.services.room_service import create_room_service, delete_room_service, 
 from app.models.user import User
 from app.services.room_service import get_rooms_by_hotel_service
 from app.schemas.room import RoomUpdate
+from app.services.room_service import get_available_rooms_service
+
+from datetime import date
+from fastapi import Query
 
 router = APIRouter(
     prefix="/rooms",
@@ -55,3 +59,19 @@ def delete_room(
 ):
 
     return delete_room_service(db, room_id, current_user)
+
+#API lay danh sach phong trong theo ngay nhan va tra phong
+@router.get("/available/{hotel_id}", response_model=List[RoomResponse])
+def get_available_rooms(
+    hotel_id: int,
+    check_in: date = Query(...),
+    check_out: date = Query(...),
+    db: Session = Depends(get_db)
+):
+    
+    return get_available_rooms_service(
+        db,
+        hotel_id,
+        check_in,
+        check_out
+    )
