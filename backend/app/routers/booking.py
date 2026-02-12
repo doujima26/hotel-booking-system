@@ -28,12 +28,3 @@ def create_booking(
         booking_data.check_out,
         current_user
     )
-
-#API lay danh sach booking cua nguoi dung dang nhap
-@router.get("/me", response_model=List[BookingResponse])
-def get_my_bookings(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-
-    return get_user_bookings_service(db, current_user.user_id)

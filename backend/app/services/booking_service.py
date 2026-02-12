@@ -7,9 +7,9 @@ from app.models.booking import Booking
 from app.models.room import Room
 from app.models.invoice import Invoice
 from app.models.user import User
-from app.models.hotel import Hotel
 
-#Xu ly nghiep vu dat phong, tao booking va invoice trong cung mot transaction
+
+# Xu ly nghiep vu dat phong va tao invoice trong cung mot transaction
 def create_booking_service(
     db: Session,
     room_id: int,
@@ -18,7 +18,7 @@ def create_booking_service(
     current_user: User
 ):
 
-    # Kiem tra phong co ton tai khong
+    # Kiem tra phong ton tai
     room = db.query(Room).filter(Room.room_id == room_id).first()
     if not room:
         raise HTTPException(
@@ -26,12 +26,12 @@ def create_booking_service(
             detail="Phong khong ton tai"
         )
 
-    # logic kiem tra trung lich
+    # Kiem tra trung lich
     overlapping_booking = db.query(Booking).filter(
         Booking.room_id == room_id,
         Booking.status.in_(["confirmed", "checked_in"]),
-        Booking.check_in < check_out, #Khách cũ đến trước khi khách mới đi
-        Booking.check_out > check_in  #Khách cũ đi sau khi khách mới đến
+        Booking.check_in < check_out,
+        Booking.check_out > check_in
     ).first()
 
     if overlapping_booking:
@@ -41,34 +41,34 @@ def create_booking_service(
         )
 
     try:
-        # Tao booking
+        # Tao booking (PENDING)
         new_booking = Booking(
             user_id=current_user.user_id,
             room_id=room_id,
             check_in=check_in,
             check_out=check_out,
-            status="confirmed"
+            status="pending"
         )
 
         db.add(new_booking)
-        db.flush()  
-        # flush de lay booking_id ma chua commit
+        db.flush()  # Lay booking_id ma chua commit
 
         # Tinh tong tien
         number_of_days = (check_out - check_in).days
         total_amount = number_of_days * room.price
 
-        # Tao invoice
+        # Tao invoice (PENDING)
         new_invoice = Invoice(
             booking_id=new_booking.booking_id,
             total_amount=total_amount,
-            status="confirmed"
+            status="pending"
         )
 
         db.add(new_invoice)
 
-        # Commit tat ca
+        #Commit transaction
         db.commit()
+        db.refresh(new_booking)
 
         return new_booking
 
@@ -78,15 +78,3 @@ def create_booking_service(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Loi he thong khi dat phong"
         )
-
-# Ham lay danh sach booking cua nguoi dung
-def get_user_bookings_service(db: Session, user_id: int) -> List[Booking]:
-
-    bookings = (
-        db.query(Booking)
-        .filter(Booking.user_id == user_id)
-        .order_by(Booking.created_at.desc())
-        .all()
-    )
-
-    return bookings
