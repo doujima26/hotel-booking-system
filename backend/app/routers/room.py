@@ -7,12 +7,14 @@ from app.core.permissions import require_admin
 from app.schemas.room import RoomCreate, RoomResponse
 from app.services.room_service import create_room_service, delete_room_service, update_room_service
 from app.models.user import User
-from app.services.room_service import get_rooms_by_hotel_service
+from app.services.room_service import get_rooms_by_branch_service
 from app.schemas.room import RoomUpdate
 from app.services.room_service import get_available_rooms_service
 
 from datetime import date
 from fastapi import Query
+
+from app.core.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/rooms",
@@ -29,14 +31,14 @@ def create_room(
     #chi Admin moi su dung duoc API tao phong
     return create_room_service(db, room_data, current_user)
 
-#API lay danh sach phong theo chi nhanh
-@router.get("/hotel/{hotel_id}", response_model=List[RoomResponse])
-def get_rooms_by_hotel(
-    hotel_id: int,
-    db: Session = Depends(get_db)
+# API lay danh sach phong theo chi nhanh
+@router.get("/my-branch")
+def get_my_branch_rooms(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
+    return get_rooms_by_branch_service(db, current_user)
 
-    return get_rooms_by_hotel_service(db, hotel_id)
 
 #API cap nhat thong tin phong
 @router.put("/{room_id}", response_model=RoomResponse)
