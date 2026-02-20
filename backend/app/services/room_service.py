@@ -160,7 +160,7 @@ def get_available_rooms_service(
     # Subquery kiem tra phong bi trung lich
     overlapping_subquery = db.query(Booking).filter(
         Booking.room_id == Room.room_id,
-        Booking.status.in_(["confirmed", "checked_in"]),
+        Booking.status.in_(["pending", "confirmed", "checked_in"]),
         Booking.check_in < check_out,
         Booking.check_out > check_in
     )

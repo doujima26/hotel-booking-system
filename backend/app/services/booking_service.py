@@ -114,6 +114,18 @@ def check_in_service(
             status_code=403,
             detail="Khong duoc xu ly chi nhanh khac"
         )
+    # Kiem tra phong dang co khach o hay khong
+    existing_checked_in = db.query(Booking).filter(
+        Booking.room_id == booking.room_id,
+        Booking.status == "checked_in",
+        Booking.booking_id != booking.booking_id
+    ).first()
+
+    if existing_checked_in:
+        raise HTTPException(
+            status_code=400,
+            detail="Phong dang co khach o"
+        )
 
     try:
         booking.status = "checked_in"
@@ -137,10 +149,9 @@ def check_out_service(
     booking_id: int,
     current_user: User
 ):
-    """
-    Xu ly check out khi khach roi phong
-    """
 
+    #Xu ly check out khi khach roi phong
+  
     booking = db.query(Booking).filter(
         Booking.booking_id == booking_id
     ).first()
