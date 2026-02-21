@@ -1,51 +1,74 @@
 "use client";
 
+import styles from "./login.module.css";
 import { useState } from "react";
-import api from "@/lib/api";
-import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const { setToken } = useAuth();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const res = await api.post("/auth/login", {
-        email,
-        password,
-      });
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-      setToken(res.data.access_token);
-      alert("Đăng nhập thành công");
-    } catch (err) {
-      alert("Sai thông tin");
+  try {
+    const res = await fetch("http://127.0.0.1:8000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || "Đăng nhập thất bại");
+      return;
     }
-  };
+
+    // Lưu token
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("role", data.role);
+
+    // Redirect
+    window.location.href = "/";
+
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
-    <div className="flex flex-col gap-4 p-10">
-      <h1 className="text-2xl font-bold">Login</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Đăng nhập</h1>
 
-      <input
-        className="border p-2"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <form className={styles.form} onSubmit={handleLogin}>
+        <label>Địa chỉ email</label>
+        <input
+          type="email"
+          placeholder="Nhập địa chỉ email của bạn"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        className="border p-2"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <label>Mật khẩu</label>
+        <input
+          type="password"
+          placeholder="******"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button
-        className="bg-blue-500 text-white p-2"
-        onClick={handleLogin}
-      >
-        Login
-      </button>
+        <button type="submit" className={styles.loginBtn}>
+          Đăng nhập
+        </button>
+      </form>
     </div>
   );
 }

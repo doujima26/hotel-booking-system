@@ -1,0 +1,261 @@
+.container {
+  background: #f5f5f5;
+}
+
+/* HERO */
+.heroWrapper {
+  padding: 20px 40px;
+}
+.hero {
+  position: relative;
+  height: 650px;
+  background: url("/images/hero.jpg") center/cover no-repeat;
+
+  border-radius: 20px;   
+  overflow: hidden;         
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.heroTitle {
+  bottom: 60px;
+  position: relative;
+  color: white;
+  font-size: 42px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* SEARCH BOX */
+.searchBox {
+  position: absolute;
+  bottom:50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 950px;
+  background: #f4d9d9;
+  padding: 28px 40px;
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  z-index: 3;
+}
+
+/* Tabs */
+.searchTabs {
+  display: flex;
+  gap: 30px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.searchTabs span {
+  cursor: pointer;
+  color: #444;
+}
+
+.searchTabs .active {
+  font-weight: 600;
+}
+
+/* Divider */
+.searchDivider {
+  height: 1px;
+  background: rgba(0,0,0,0.2);
+  margin-bottom: 20px;
+}
+
+/* Form row */
+.searchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+/* Input block */
+.searchField {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  flex: 1;
+}
+
+.searchField label {
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.searchField input {
+  padding: 12px 18px;
+  border-radius: 25px;
+  border: none;
+  background: #e9e9e9;
+  outline: none;
+  font-size: 13px;
+}
+
+/* Button */
+.searchBtn {
+  background: #6ec1e4;
+  border: none;
+  padding: 16px 28px;
+  border-radius: 16px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.searchBtn:hover {
+  background: #4ba8d0;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.inputGroup input {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: white;
+}
+
+.searchBtn {
+  background: #6ec1e4;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.searchBtn:hover {
+  background: #4ba8d0;
+}
+
+/* HOTEL SECTION */
+.hotelSection {
+  margin-top: 120px;
+  padding: 0 80px 80px;
+}
+
+.sectionTitle {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  margin-bottom: 30px;
+}
+
+.activeTab {
+  border-bottom: 2px solid black;
+  font-weight: 600;
+}
+
+.hotelGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+/* CARD */
+.card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.cardImage {
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  transition: 0.4s ease;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.05);
+}
+
+/* Overlay gradient */
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.2),
+    transparent
+  );
+  color: white;
+}
+
+/* Content row */
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.cardDate {
+  font-size: 12px;
+  color: #ccc;
+  margin-bottom: 6px;
+}
+
+.cardPrice {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Arrow button */
+.cardArrow {
+  background: rgba(255,255,255,0.2);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.cardArrow:hover {
+  background: #6ec1e4;
+}

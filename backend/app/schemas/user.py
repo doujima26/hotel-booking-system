@@ -20,12 +20,15 @@ class UserLogin(BaseModel):
     password: str
 
 # Tra du lieu ve client
+from datetime import date
+
 class UserResponse(BaseModel):
     user_id: int
     name: str
-    email: EmailStr
+    email: str
+    phone_number: str
+    dob: date
     role: str
-    hotel_id: Optional[int] = None
 
     class Config:
         from_attributes = True

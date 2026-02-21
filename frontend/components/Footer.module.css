@@ -1,0 +1,47 @@
+.footer {
+  width: 100%;
+  margin-top: 80px;
+  padding: 60px 80px;
+  color: white;
+  
+  /* 1. Thêm ảnh nền và lớp phủ tối (linear-gradient) để chữ dễ đọc hơn */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                    url('/images/footer-bg.jpg');
+  
+  /* 2. Cấu hình để ảnh nền hiển thị đẹp */
+  background-size: cover;      /* Ảnh phủ kín toàn bộ footer */
+  background-position: center; /* Ảnh căn giữa */
+  background-repeat: no-repeat;
+  
+  position: relative;
+  left: 0;
+  bottom: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.copy {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #999;
+}
+
+.contactTitle {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.contactItem {
+  font-size: 14px;
+  color: #ccc;
+}

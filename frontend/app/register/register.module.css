@@ -1,0 +1,112 @@
+/* =====================
+   CONTAINER CHUNG
+===================== */
+.container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* =====================
+   STEP EMAIL
+===================== */
+.emailBox {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emailInput {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #a6d1e6;
+  font-weight: 500;
+}
+
+.primaryBtn:hover {
+  background: #7fb8d4;
+}
+
+/* =====================
+   STEP ROLE
+===================== */
+.roleBox {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.roleBtn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #e2e2e2;
+}
+
+.roleBtn:hover {
+  background: #d3d3d3;
+}
+
+/* =====================
+   FORM
+===================== */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 350px;
+}
+
+.form input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #a6d1e6;
+  font-weight: 500;
+}
+
+.submitBtn:hover {
+  background: #7fb8d4;
+}
+
+/* =====================
+   BACK BUTTON
+===================== */
+.backBtn {
+  width: 60px;
+  background: #ddd;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}

@@ -1,15 +1,22 @@
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Header />
+
+          <main style={{ flex: 1 }}>
+            <div className="pageContainer">
+              {children}
+            </div>
+          </main>
+
+          <Footer />
+        </div>
       </body>
     </html>
   );
