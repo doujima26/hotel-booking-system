@@ -82,7 +82,7 @@ export default function Header() {
           {/* ===== USER ===== */}
           {role === "user" && (
             <button
-              className={styles.link}
+              className={styles.accountBtn}
               onClick={handleAccountClick}
             >
               Tài khoản
