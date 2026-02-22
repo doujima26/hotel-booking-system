@@ -13,6 +13,8 @@ from app.routers import invoice
 
 from app.routers import booking
 
+
+
 app = FastAPI(title="Hotel Booking API")
 
 app.add_middleware(

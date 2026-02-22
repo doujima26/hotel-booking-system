@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
 #ket noi database postgres
-DATABASE_URL = "postgresql://postgres:26122004@localhost:5433/hotel_booking"
+DATABASE_URL = "postgresql://neondb_owner:npg_KdSD3ZPvBnf9@ep-flat-union-a1znunxz-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # tao engine ket noi den database
 engine = create_engine(
