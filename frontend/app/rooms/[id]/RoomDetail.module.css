@@ -1,0 +1,108 @@
+.wrapper {
+  padding: 60px;
+  background: #f4f4f4;
+}
+
+/* ===== TOP ===== */
+.topSection {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.infoCard {
+  width: 350px;
+  background: #f1dcdc;
+  padding: 25px;
+  border-radius: 20px;
+}
+
+.descriptionBox {
+  background: #e7e7e7;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.imageLayout {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+}
+
+.smallImages {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.smallImages img {
+  width: 250px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.largeImage {
+  flex: 1;
+  height: 340px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+/* ===== PAYMENT ===== */
+.paymentCard {
+  background: #e8caca;
+  padding: 40px;
+  border-radius: 25px;
+}
+
+.paymentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabs span {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.activeTab {
+  border-bottom: 2px solid black;
+}
+
+.paymentForm {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 500px;
+}
+
+.paymentForm input {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+}
+
+.bottomRow {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.bookBtn {
+  padding: 14px 35px;
+  background: #8bc3e6;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}

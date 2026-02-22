@@ -32,7 +32,7 @@ def create_room(
     return create_room_service(db, room_data, current_user)
 
 # API lay danh sach phong theo chi nhanh
-@router.get("/my-branch")
+@router.get("/get_my_branch_rooms")
 def get_my_branch_rooms(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)

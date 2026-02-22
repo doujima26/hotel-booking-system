@@ -78,7 +78,7 @@ export default function Header() {
           {user?.role === "user" && (
             <>
               <Link href="#" className={styles.link}>Khách sạn</Link>
-              <Link href="#" className={styles.link}>Đặt phòng</Link>
+              <Link href="/my-bookings" className={styles.link}>Đặt phòng</Link>
               <Link href="#" className={styles.link}>Dịch vụ</Link>
 
               <button

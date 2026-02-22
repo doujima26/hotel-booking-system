@@ -1,9 +1,12 @@
-"use client";
-
+import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { AuthProvider } from "../context/AuthContext";
-import "./globals.css";
+
+export const metadata = {
+  title: "Continental.com",
+  description: "Hotel Booking System",
+};
 
 export default function RootLayout({
   children,
@@ -12,11 +15,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body>
+      <body className="app-body">
         <AuthProvider>
-          <Header />
-          {children}
-          <Footer />
+          <div className="app-wrapper">
+
+            <Header />
+
+            <main className="page-container content-offset">
+              {children}
+            </main>
+
+            <Footer />
+
+          </div>
         </AuthProvider>
       </body>
     </html>

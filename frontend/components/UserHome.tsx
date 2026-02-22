@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "@/app/page.module.css";
 
-import { useEffect, useRef } from "react";
 export default function UserHome() {
+  const router = useRouter();
+
   const [hotelId, setHotelId] = useState("1");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -18,6 +20,14 @@ export default function UserHome() {
 
     if (!checkIn || !checkOut) {
       setError("Vui lòng chọn ngày nhận và ngày trả");
+      return;
+    }
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    if (checkOutDate <= checkInDate) {
+      setError("Ngày trả phải sau ngày nhận");
       return;
     }
 
@@ -44,7 +54,6 @@ export default function UserHome() {
 
   return (
     <main className={styles.container}>
-
       {/* HERO */}
       <section className={styles.heroWrapper}>
         <div className={styles.hero}>
@@ -55,51 +64,12 @@ export default function UserHome() {
             <br />
             & EXPERIENCES
           </h1>
-
-          {/* SEARCH BOX */}
-          <div className={styles.searchBox}>
-
-            {/* Tabs */}
-            <div className={styles.searchTabs}>
-              <span className={styles.activeTab}>Khách sạn</span>
-              <span>Chuyến bay</span>
-              <span>Đặt phòng</span>
-            </div>
-
-            {/* Divider */}
-            <div className={styles.searchDivider}></div>
-
-            {/* Row */}
-            <div className={styles.searchRow}>
-
-              <div className={styles.searchField}>
-                <label>Địa chỉ</label>
-                <input type="text" defaultValue="45 ĐƯỜNG NGUYỄN TRÃI" />
-              </div>
-
-              <div className={styles.searchField}>
-                <label>Check in</label>
-                <input type="text" defaultValue="06 AUGUST, 2024" />
-              </div>
-
-              <div className={styles.searchField}>
-                <label>Check out</label>
-                <input type="text" defaultValue="07 AUGUST, 2024" />
-              </div>
-
-              <button className={styles.searchBtn}>
-                SEARCH
-              </button>
-
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* ===== BLOCK SEARCH RIÊNG THEO FIGMA ===== */}
+      {/* SEARCH */}
       <section className={styles.userSearchSection}>
         <div className={styles.userSearchBox}>
-
           <div className={styles.userField}>
             <label>Địa điểm</label>
             <select
@@ -116,6 +86,7 @@ export default function UserHome() {
             <label>Ngày nhận</label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
             />
@@ -125,6 +96,7 @@ export default function UserHome() {
             <label>Ngày trả</label>
             <input
               type="date"
+              min={checkIn || new Date().toISOString().split("T")[0]}
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
             />
@@ -136,7 +108,6 @@ export default function UserHome() {
           >
             {loading ? "Đang tìm..." : "Tìm kiếm"}
           </button>
-
         </div>
       </section>
 
@@ -146,22 +117,35 @@ export default function UserHome() {
         </p>
       )}
 
-
-      {/* ===== RESULT ===== */}
+      {/* RESULT */}
       {rooms.length > 0 && (
         <div className={styles.roomSection}>
           <h2 className={styles.sectionTitle}>PHÒNG PHÙ HỢP</h2>
-
-          <InfiniteSlider rooms={rooms} />
+          <InfiniteSlider
+            rooms={rooms}
+            checkIn={checkIn}
+            checkOut={checkOut}
+          />
         </div>
       )}
-
     </main>
   );
 }
 
+/* ============================= */
+/* INFINITE SLIDER */
+/* ============================= */
 
-function InfiniteSlider({ rooms }: { rooms: any[] }) {
+function InfiniteSlider({
+  rooms,
+  checkIn,
+  checkOut,
+}: {
+  rooms: any[];
+  checkIn: string;
+  checkOut: string;
+}) {
+  const router = useRouter();
   const visibleCount = 4;
   const sliderRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(visibleCount);
@@ -217,11 +201,20 @@ function InfiniteSlider({ rooms }: { rooms: any[] }) {
       <div className={styles.sliderContainer}>
         <div ref={sliderRef} className={styles.sliderTrack}>
           {extended.map((room, i) => (
-            <div key={i} className={styles.roomCard}>
+            <div
+              key={i}
+              className={styles.roomCard}
+              onClick={() =>
+                router.push(
+                  `/rooms/${room.room_id}?checkIn=${checkIn}&checkOut=${checkOut}`
+                )
+              }
+              style={{ cursor: "pointer" }}
+            >
               <img src="/images/room1.jpg" alt="room" />
               <div className={styles.cardOverlay}>
                 <h3>Phòng {room.room_number}</h3>
-                <p>${room.price}</p>
+                <p>{room.price} VND</p>
               </div>
             </div>
           ))}

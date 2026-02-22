@@ -1,0 +1,150 @@
+/* ===== PAGE WRAPPER ===== */
+.adminWrapper {
+  padding: 40px 60px;
+  background: #f4f4f4;
+  min-height: 100vh;
+}
+
+/* ===== HEADER CARD ===== */
+.headerCard {
+  background: #e6d3d3;
+  border: 2px solid #444;
+  border-radius: 18px;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ===== HEADER BUTTONS ===== */
+.headerButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.headerBtnLight {
+  background: #b7d6e6;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.headerBtnDark {
+  background: #4aa3d9;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  font-weight: 500;
+}
+
+/* ===== FORM SECTION ===== */
+.formSection {
+  margin-top: 60px;
+  max-width: 600px;
+}
+
+.inputGroup {
+  margin-bottom: 25px;
+}
+
+.inputLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.inputField {
+  width: 100%;
+  background: #e6d3d3;
+  border: none;
+  border-radius: 15px;
+  padding: 14px 18px;
+  font-size: 14px;
+  outline: none;
+}
+
+.inputField:focus {
+  box-shadow: 0 0 0 2px #4aa3d9;
+}
+
+/* ===== BUTTON GROUP ===== */
+.buttonGroup {
+  display: flex;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.actionBtn {
+  background: #9cc9e4;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.actionBtn:hover {
+  background: #7fb6d7;
+}
+
+/* ===== TABLE CARD ===== */
+.tableCard {
+  margin-top: 60px;
+  background: #e6d3d3;
+  border-radius: 25px;
+  border: 2px solid #444;
+  overflow: hidden;
+}
+
+.tableHeader {
+  background: #d8c4c4;
+  padding: 18px 25px;
+  border-bottom: 2px solid #444;
+}
+
+.tableHeaderRow {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 2fr 2fr;
+  font-weight: 600;
+}
+
+.tableBody {
+  padding: 15px 25px;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 2fr 2fr;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tableRow:hover {
+  background: #f1e3e3;
+}
+
+.selectedRow {
+  background: #d9bcbc;
+}
+
+select.inputField {
+  appearance: none;
+  cursor: pointer;
+}
+
+.errorText {
+  color: red;
+  font-size: 13px;
+  margin-top: 6px;
+}
