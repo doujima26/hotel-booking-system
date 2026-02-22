@@ -1,16 +1,15 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+from app.core.config import settings
 
 #ket noi database postgres
-DATABASE_URL = "postgresql://neondb_owner:npg_KdSD3ZPvBnf9@ep-flat-union-a1znunxz-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # tao engine ket noi den database
-engine = create_engine(
-    DATABASE_URL,
-    echo=True,         
-    future=True
-)
+engine = create_engine(settings.DATABASE_URL)
 
 # tao sesion local
 SessionLocal = sessionmaker(

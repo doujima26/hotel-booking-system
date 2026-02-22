@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from app.core.database import engine
 
+from app.core.database import Base
+from app.models import *
+
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users
 
@@ -12,6 +15,8 @@ from app.routers import room
 from app.routers import invoice
 
 from app.routers import booking
+
+
 
 
 

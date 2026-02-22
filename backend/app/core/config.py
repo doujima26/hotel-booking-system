@@ -2,12 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Database
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_HOST: str
-    DB_PORT: int
-    DB_NAME: str
+    # Database (production chỉ cần cái này)
     DATABASE_URL: str
 
     # Mail
@@ -22,11 +17,11 @@ class Settings(BaseSettings):
     # JWT
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 # thoi gian token hop le (phut)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     model_config = SettingsConfigDict(
         env_file=".env",
-        extra="forbid"   # khong cho phep bien du
+        extra="ignore"
     )
 
 
