@@ -34,9 +34,9 @@ export default function AdminRooms() {
   // ==============================
   const loadRooms = async () => {
     try {
-      const res = await fetch(
-        "http://127.0.0.1:8000/rooms/get_my_branch_rooms",
-        {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/rooms/get_my_branch_rooms`,
+          {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -109,7 +109,7 @@ export default function AdminRooms() {
     if (!validate()) return;
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/rooms", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export default function AdminRooms() {
       );
 
       const res = await fetch(
-        `http://127.0.0.1:8000/rooms/${selectedId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/rooms/${selectedId}`,
         {
           method: "PUT",
           headers: {
@@ -184,7 +184,7 @@ export default function AdminRooms() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/rooms/${selectedId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/rooms/${selectedId}`,
         {
           method: "DELETE",
           headers: {

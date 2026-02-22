@@ -25,8 +25,8 @@ export default function RoomStatusPage() {
   // ==========================
   const loadBookings = async () => {
     try {
-      const res = await fetch(
-        "http://127.0.0.1:8000/bookings/active",
+        const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/bookings/active`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ export default function RoomStatusPage() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/bookings/${selectedBooking.booking_id}/check-in`,
+        `${process.env.NEXT_PUBLIC_API_URL}/bookings/${selectedBooking.booking_id}/check-in`,
         {
           method: "PUT",
           headers: {
@@ -95,7 +95,7 @@ export default function RoomStatusPage() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/bookings/${selectedBooking.booking_id}/check-out`,
+        `${process.env.NEXT_PUBLIC_API_URL}/bookings/${selectedBooking.booking_id}/check-out`,
         {
           method: "PUT",
           headers: {

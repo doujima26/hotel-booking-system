@@ -25,7 +25,7 @@ export default function AdminInvoices() {
     const loadInvoices = async () => {
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/invoices/branch",
+          `${process.env.NEXT_PUBLIC_API_URL}/invoices/branch`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ export default function AdminInvoices() {
     const confirmInvoice = async (invoiceId: number) => {
         try {
             const res = await fetch(
-            `http://127.0.0.1:8000/invoices/${invoiceId}/confirm`,
+            `${process.env.NEXT_PUBLIC_API_URL}/invoices/${invoiceId}/confirm`,
             {
                 method: "PUT",
                 headers: {
