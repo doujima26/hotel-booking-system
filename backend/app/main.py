@@ -22,9 +22,14 @@ from app.routers import booking
 
 app = FastAPI(title="Hotel Booking API")
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # mở toàn bộ để test
+    allow_origins=[
+        "https://hotel-booking-system-wine-beta.vercel.app",
+        "https://hotel-booking-system-gcx84eu9g-hdung261204-8804s-projects.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
