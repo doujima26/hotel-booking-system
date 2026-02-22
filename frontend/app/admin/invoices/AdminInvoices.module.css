@@ -1,0 +1,44 @@
+.wrapper {
+  background: #d8bebe;
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.card {
+  background: #e8e4b5;
+  padding: 25px;
+  border-radius: 15px;
+  border: 1px solid #333;
+}
+
+.card p {
+  margin-bottom: 12px;
+}
+
+.confirmBtn {
+  margin-top: 15px;
+  background: #87c987;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirmedBtn {
+  margin-top: 15px;
+  background: #ccc;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: not-allowed;
+}

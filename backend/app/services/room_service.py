@@ -168,7 +168,7 @@ def get_available_rooms_service(
     # Lay phong thuoc chi nhanh va khong ton tai booking trung
     rooms = db.query(Room).filter(
         Room.hotel_id == hotel_id,
-        Room.status == "available",
+        
         ~overlapping_subquery.exists()
     ).all()
 

@@ -6,9 +6,10 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.invoice import InvoiceResponse
-from app.services.invoice_service import get_user_invoices_service
+from app.services.invoice_service import get_hotel_invoices_service, get_user_invoices_service
 from app.core.permissions import require_staff_or_admin
 from app.services.invoice_service import confirm_invoice_service
+
 
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
 
@@ -28,3 +29,11 @@ async def confirm_invoice(
     current_user: User = Depends(require_staff_or_admin)
 ):
     return await confirm_invoice_service(db, invoice_id, current_user)
+
+# API lấy danh sách hóa đơn theo chi nhánh (Admin/Staff)
+@router.get("/branch", response_model=List[InvoiceResponse])
+def get_branch_invoices(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin)
+):
+    return get_hotel_invoices_service(db, current_user.hotel_id)

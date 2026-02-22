@@ -14,11 +14,39 @@ export default function MyBookings() {
       ? localStorage.getItem("access_token")
       : null;
 
+  // ==============================
+  // HELPER STATUS
+  // ==============================
+  const getStatusLabel = (status: string) => {
+    if (status === "paid") return "Đặt thành công";
+    if (status === "pending") return "Chờ xác nhận";
+    return status;
+  };
+
+  const getStatusStyle = (status: string) => {
+    if (status === "paid") {
+      return {
+        backgroundColor: "#c8f7c5",
+        color: "#2e7d32",
+      };
+    }
+    if (status === "pending") {
+      return {
+        backgroundColor: "#ffe9b3",
+        color: "#b26a00",
+      };
+    }
+    return {};
+  };
+
+  // ==============================
+  // FETCH DATA
+  // ==============================
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/invoices/my",
+          "http://127.0.0.1:8000/invoices/me",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,33 +74,47 @@ export default function MyBookings() {
     <div className={styles.wrapper}>
       <div className={styles.headerBox}>
         <h2>Lịch sử đặt phòng</h2>
-        <button className={styles.successBtn}>
-          Đặt thành công
-        </button>
       </div>
 
       <div className={styles.grid}>
         {invoices.map((invoice) => (
           <div key={invoice.invoice_id} className={styles.card}>
-            <p><strong>Họ và tên:</strong> {invoice.customer_name}</p>
             <p><strong>Số phòng:</strong> {invoice.room_number}</p>
             <p><strong>Loại phòng:</strong> {invoice.room_type}</p>
-            <p><strong>Ngày nhận:</strong> {invoice.check_in}</p>
-            <p><strong>Ngày trả:</strong> {invoice.check_out}</p>
+
+            <p>
+              <strong>Ngày nhận:</strong>{" "}
+              {new Date(invoice.check_in).toLocaleDateString("vi-VN")}
+            </p>
+
+            <p>
+              <strong>Ngày trả:</strong>{" "}
+              {new Date(invoice.check_out).toLocaleDateString("vi-VN")}
+            </p>
+
+            <p>
+              <strong>Ngày đặt:</strong>{" "}
+              {new Date(invoice.issued_at).toLocaleString("vi-VN")}
+            </p>
+
             <p>
               <strong>Tổng tiền:</strong>{" "}
               {Number(invoice.total_amount).toLocaleString()} VND
-              (Đã thanh toán)
             </p>
 
-            <button
-              className={styles.detailBtn}
-              onClick={() =>
-                router.push(`/invoice/${invoice.invoice_id}`)
-              }
-            >
-              chi tiết
-            </button>
+            <p>
+              <strong>Trạng thái:</strong>{" "}
+              <span
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  fontWeight: 600,
+                  ...getStatusStyle(invoice.status),
+                }}
+              >
+                {getStatusLabel(invoice.status)}
+              </span>
+            </p>
           </div>
         ))}
       </div>
