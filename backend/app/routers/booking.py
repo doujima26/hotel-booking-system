@@ -5,8 +5,8 @@ from typing import List
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
-from app.schemas.booking import BookingCreate, BookingResponse
-from app.services.booking_service import create_booking_service
+from app.schemas.booking import ActiveBookingResponse, BookingCreate, BookingResponse
+from app.services.booking_service import create_booking_service, get_active_bookings_service
 from app.models.user import User
 from app.core.permissions import require_staff_or_admin
 from app.services.booking_service import check_in_service, check_out_service
@@ -50,3 +50,11 @@ def check_out(
 ):
 
     return check_out_service(db, booking_id, current_user)
+
+#API lay danh sach booking dang hoat dong (chua check out) theo chi nhanh
+@router.get("/active", response_model=List[ActiveBookingResponse])
+def get_active_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_staff_or_admin)
+):
+    return get_active_bookings_service(db, current_user.hotel_id)

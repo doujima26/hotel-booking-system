@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import styles from "./AdminRooms.module.css";
 
 export default function AdminRooms() {
@@ -10,6 +11,12 @@ export default function AdminRooms() {
   const [roomNumber, setRoomNumber] = useState("");
   const [roomType, setRoomType] = useState("");
   const [price, setPrice] = useState("");
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isEdit = pathname === "/admin/rooms";
+  const isStatus = pathname === "/admin/rooms/status";
 
   const token =
     typeof window !== "undefined"
@@ -112,7 +119,7 @@ export default function AdminRooms() {
           room_number: roomNumber,
           room_type: roomType,
           price: Number(price),
-          status: "available", 
+          status: "available",
         }),
       });
 
@@ -135,7 +142,9 @@ export default function AdminRooms() {
     if (!validate()) return;
 
     try {
-      const selectedRoom = rooms.find(r => r.room_id === selectedId);
+      const selectedRoom = rooms.find(
+        (r) => r.room_id === selectedId
+      );
 
       const res = await fetch(
         `http://127.0.0.1:8000/rooms/${selectedId}`,
@@ -170,8 +179,8 @@ export default function AdminRooms() {
   // ==============================
   const deleteRoom = async () => {
     if (!selectedId) return;
-
-    if (!confirm("Bạn có chắc muốn xóa phòng này?")) return;
+    if (!confirm("Bạn có chắc muốn xóa phòng này?"))
+      return;
 
     try {
       const res = await fetch(
@@ -196,73 +205,139 @@ export default function AdminRooms() {
 
   return (
     <div className={styles.adminWrapper}>
+      {/* HEADER */}
       <div className={styles.headerCard}>
-        <div className={styles.headerTitle}>Chỉnh sửa phòng</div>
+        <div className={styles.headerTitle}>
+          Chỉnh sửa phòng
+        </div>
+
+        <div className={styles.headerButtons}>
+          <button
+            className={
+              isStatus
+                ? styles.headerBtnDark
+                : styles.headerBtnLight
+            }
+            onClick={() =>
+              router.push("/admin/rooms/status")
+            }
+          >
+            Trạng thái phòng
+          </button>
+
+          <button
+            className={
+              isEdit
+                ? styles.headerBtnDark
+                : styles.headerBtnLight
+            }
+            onClick={() =>
+              router.push("/admin/rooms")
+            }
+          >
+            Chỉnh sửa phòng
+          </button>
+        </div>
       </div>
 
+      {/* FORM */}
       <div className={styles.formSection}>
         <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Số phòng</label>
+          <label className={styles.inputLabel}>
+            Số phòng
+          </label>
           <input
             className={styles.inputField}
             value={roomNumber}
             onChange={(e) => {
               setRoomNumber(e.target.value);
-              setErrors({ ...errors, roomNumber: "" });
+              setErrors({
+                ...errors,
+                roomNumber: "",
+              });
             }}
           />
           {errors.roomNumber && (
-            <div className={styles.errorText}>{errors.roomNumber}</div>
+            <div className={styles.errorText}>
+              {errors.roomNumber}
+            </div>
           )}
         </div>
 
         <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Loại phòng</label>
+          <label className={styles.inputLabel}>
+            Loại phòng
+          </label>
           <input
             className={styles.inputField}
             value={roomType}
             onChange={(e) => {
               setRoomType(e.target.value);
-              setErrors({ ...errors, roomType: "" });
+              setErrors({
+                ...errors,
+                roomType: "",
+              });
             }}
           />
           {errors.roomType && (
-            <div className={styles.errorText}>{errors.roomType}</div>
+            <div className={styles.errorText}>
+              {errors.roomType}
+            </div>
           )}
         </div>
 
         <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Giá (VND)</label>
+          <label className={styles.inputLabel}>
+            Giá (VND)
+          </label>
           <input
             type="number"
             className={styles.inputField}
             value={price}
             onChange={(e) => {
               setPrice(e.target.value);
-              setErrors({ ...errors, price: "" });
+              setErrors({
+                ...errors,
+                price: "",
+              });
             }}
           />
           {errors.price && (
-            <div className={styles.errorText}>{errors.price}</div>
+            <div className={styles.errorText}>
+              {errors.price}
+            </div>
           )}
         </div>
 
         <div className={styles.buttonGroup}>
-          <button className={styles.actionBtn} onClick={createRoom}>
+          <button
+            className={styles.actionBtn}
+            onClick={createRoom}
+          >
             Thêm mới
           </button>
-          <button className={styles.actionBtn} onClick={updateRoom}>
+          <button
+            className={styles.actionBtn}
+            onClick={updateRoom}
+          >
             Cập nhật
           </button>
-          <button className={styles.actionBtn} onClick={deleteRoom}>
+          <button
+            className={styles.actionBtn}
+            onClick={deleteRoom}
+          >
             Xóa
           </button>
-          <button className={styles.actionBtn} onClick={loadRooms}>
+          <button
+            className={styles.actionBtn}
+            onClick={loadRooms}
+          >
             Làm mới
           </button>
         </div>
       </div>
 
+      {/* TABLE */}
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <div className={styles.tableHeaderRow}>
@@ -279,7 +354,9 @@ export default function AdminRooms() {
             <div
               key={room.room_id}
               className={`${styles.tableRow} ${
-                selectedId === room.room_id ? styles.selectedRow : ""
+                selectedId === room.room_id
+                  ? styles.selectedRow
+                  : ""
               }`}
               onClick={() => {
                 setSelectedId(room.room_id);

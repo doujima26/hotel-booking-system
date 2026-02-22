@@ -91,6 +91,7 @@ export default function AdminInvoices() {
       <div className={styles.grid}>
         {invoices.map((invoice) => (
           <div key={invoice.invoice_id} className={styles.card}>
+            <p><strong>Khách hàng:</strong> {invoice.customer_name}</p>
             <p><strong>Số phòng:</strong> {invoice.room_number}</p>
             <p><strong>Loại phòng:</strong> {invoice.room_type}</p>
             <p><strong>Ngày nhận phòng:</strong> {invoice.check_in}</p>

@@ -19,6 +19,7 @@ class InvoiceResponse(BaseModel):
     total_amount: float
     status: str
     issued_at: datetime
+    customer_name: str 
 
     class Config:
         from_attributes = True

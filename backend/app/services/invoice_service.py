@@ -48,10 +48,12 @@ def get_hotel_invoices_service(db: Session, hotel_id: int):
             Booking.check_out,
             Invoice.total_amount,
             Invoice.status,
-            Invoice.issued_at
+            Invoice.issued_at,
+            User.name.label("customer_name")
         )
         .join(Booking, Invoice.booking_id == Booking.booking_id)
         .join(Room, Booking.room_id == Room.room_id)
+        .join(User, Booking.user_id == User.user_id)
         .filter(Room.hotel_id == hotel_id)
         .order_by(Invoice.issued_at.desc())
         .all()

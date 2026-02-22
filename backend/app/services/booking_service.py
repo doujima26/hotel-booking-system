@@ -193,3 +193,24 @@ def check_out_service(
             status_code=500,
             detail="Loi khi check out"
         )
+    
+# Lay danh sach booking dang hoat dong (confirmed, checked_in) theo chi nhanh
+def get_active_bookings_service(db: Session, hotel_id: int):
+    results = (
+        db.query(
+            Booking.booking_id,
+            Room.room_number,
+            User.name.label("customer_name"),
+            Booking.check_in,
+            Booking.check_out,
+            Booking.status.label("booking_status")
+        )
+        .join(Room, Booking.room_id == Room.room_id)
+        .join(User, Booking.user_id == User.user_id)
+        .filter(Room.hotel_id == hotel_id)
+        .filter(Booking.status.in_(["confirmed", "checked_in"]))
+        .order_by(Booking.check_in.asc())
+        .all()
+    )
+
+    return results
