@@ -16,14 +16,11 @@ export default function LoginPage() {
 const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    }
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
   const data = await res.json();
 
@@ -32,8 +29,23 @@ const handleLogin = async (e: React.FormEvent) => {
     return;
   }
 
-  login(data.access_token);
-  router.push("/");
+  localStorage.setItem("access_token", data.access_token);
+
+
+  const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${data.access_token}`,
+    },
+  });
+
+  const user = await meRes.json();
+
+
+  if (user.role === "admin") {
+    router.push("/admin");
+  } else {
+    router.push("/");
+  }
 };
 
   return (
