@@ -24,10 +24,7 @@ app = FastAPI(title="Hotel Booking API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://hotel-booking-system.vercel.app"
-    ],
+    allow_origins=["*"],  # mở toàn bộ để test
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
