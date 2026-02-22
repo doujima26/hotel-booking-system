@@ -14,7 +14,7 @@ html, body {
   flex-direction: column;
 }
 
-/* Content sẽ tự đẩy footer xuống */
+
 .page-container {
   flex: 1;
   max-width: 1280px;
@@ -23,11 +23,11 @@ html, body {
   padding: 20px;
 }
 
-/* Background toàn trang */
+
 body {
   background: #f4f4f4;
 }
-/* Nếu header cao 80px */
+
 .content-offset {
   padding-top: 80px;
 }

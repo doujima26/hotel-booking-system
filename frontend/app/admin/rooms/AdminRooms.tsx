@@ -112,7 +112,7 @@ export default function AdminRooms() {
           room_number: roomNumber,
           room_type: roomType,
           price: Number(price),
-          status: "available", // 👈 mặc định
+          status: "available", 
         }),
       });
 

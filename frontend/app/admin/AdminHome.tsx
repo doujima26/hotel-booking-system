@@ -17,7 +17,7 @@ export default function AdminHome() {
         </div>
       </section>
 
-      {/* Có thể thêm thống kê ở đây sau */}
+
     </main>
   );
 }

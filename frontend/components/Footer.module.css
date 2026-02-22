@@ -4,11 +4,11 @@
   padding: 60px 80px;
   color: white;
   
-  /* 1. Thêm ảnh nền và lớp phủ tối (linear-gradient) để chữ dễ đọc hơn */
+
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
                     url('/images/footer-bg.jpg');
   
-  /* 2. Cấu hình để ảnh nền hiển thị đẹp */
+
   background-size: cover;      /* Ảnh phủ kín toàn bộ footer */
   background-position: center; /* Ảnh căn giữa */
   background-repeat: no-repeat;
