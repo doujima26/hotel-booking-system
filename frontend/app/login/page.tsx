@@ -8,10 +8,11 @@ import { useAuth } from "../../context/AuthContext";
 export default function LoginPage() {
   const router = useRouter();
 
-  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+const { login } = useAuth();
 
 const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -29,20 +30,12 @@ const handleLogin = async (e: React.FormEvent) => {
     return;
   }
 
-  localStorage.setItem("access_token", data.access_token);
+  await login(data.access_token);
 
-
-  const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-    headers: {
-      Authorization: `Bearer ${data.access_token}`,
-    },
-  });
-
-  const user = await meRes.json();
-
-
-  if (user.role === "admin") {
+  if (data.role === "admin") {
     router.push("/admin");
+  } else if (data.role === "staff") {
+    router.push("/staff");
   } else {
     router.push("/");
   }
