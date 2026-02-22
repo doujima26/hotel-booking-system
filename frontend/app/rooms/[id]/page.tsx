@@ -54,7 +54,7 @@ export default function RoomDetail() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://127.0.0.1:8000/bookings", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

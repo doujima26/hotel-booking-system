@@ -34,9 +34,9 @@ export default function UserHome() {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `http://127.0.0.1:8000/rooms/available/${hotelId}?check_in=${checkIn}&check_out=${checkOut}`
-      );
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/rooms/available/${hotelId}?check_in=${checkIn}&check_out=${checkOut}`
+        );
 
       const data = await res.json();
 
