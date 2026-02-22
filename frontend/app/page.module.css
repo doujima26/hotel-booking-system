@@ -259,3 +259,134 @@
 .cardArrow:hover {
   background: #6ec1e4;
 }
+
+/* =========================
+   USER SEARCH SECTION
+========================= */
+
+.userSearchSection {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.userSearchBox {
+  background: #e7c9c9;
+  width: 1000px;
+  padding: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  justify-content: center;
+}
+
+.userField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.userField label {
+  font-weight: 600;
+}
+
+.userField input,
+.userField select {
+  width: 220px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #f5e3e3;
+  font-size: 14px;
+}
+
+.userSearchBtn {
+  background: #9fd0e5;
+  padding: 12px 30px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.userSearchBtn:hover {
+  background: #7fb8d4;
+}
+
+.roomSection {
+  background: #e8c7c7;
+  padding: 40px;
+  border-radius: 25px;
+  margin-top: 40px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sliderWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sliderContainer {
+  overflow: hidden;
+  width: 100%;
+}
+
+.sliderTrack {
+  display: flex;
+}
+
+.roomCard {
+  min-width: 25%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.roomCard img {
+  width: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  height: 240px;
+}
+
+.cardOverlay {
+  position: relative;
+  margin-top: -60px;
+  padding: 10px;
+  color: white;
+  font-weight: 500;
+}
+
+.price {
+  color: #ffd700;
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+.arrowLeft {
+  left: -20px;
+}
+
+.arrowRight {
+  right: -20px;
+}

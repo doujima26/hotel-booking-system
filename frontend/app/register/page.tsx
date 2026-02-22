@@ -22,22 +22,26 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hotelId, setHotelId] = useState("");
   const [error, setError] = useState("");
-
-  const [day, setDay] = useState("");
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
   const [dob, setDob] = useState("");
+  const [secretKey, setSecretKey] = useState("");
 
-  // =========================
-  // VALIDATE EMAIL
-  // =========================
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+    dob: "",
+    password: "",
+    confirmPassword: "",
+    hotelId: "",
+    secretKey: "",
+  });
+
   const validateEmail = (value: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(value);
   };
 
   // =========================
-  // STEP 1: EMAIL
+  // STEP 1
   // =========================
   if (step === "email") {
     return (
@@ -47,7 +51,9 @@ export default function RegisterPage() {
         <div className={styles.emailBox}>
           <input
             type="email"
-            className={styles.emailInput}
+            className={`${styles.emailInput} ${
+              emailError ? styles.inputError : ""
+            }`}
             placeholder="abc@mail.com"
             value={email}
             onChange={(e) => {
@@ -56,13 +62,16 @@ export default function RegisterPage() {
             }}
           />
 
-          {emailError && <p className={styles.error}>{emailError}</p>}
+          {/* luôn render để không lệch */}
+          <p className={styles.error}>{emailError}</p>
 
           <button
             className={styles.primaryBtn}
             onClick={() => {
               if (!validateEmail(email)) {
-                setEmailError("Email không đúng định dạng");
+                setEmailError(
+                  "Vui lòng kiểm tra xem địa chỉ email bạn vừa nhập có đúng hay không."
+                );
                 return;
               }
               setStep("role");
@@ -76,7 +85,7 @@ export default function RegisterPage() {
   }
 
   // =========================
-  // STEP 2: ROLE
+  // STEP 2
   // =========================
   if (step === "role") {
     return (
@@ -131,24 +140,61 @@ export default function RegisterPage() {
   // =========================
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+
+    let newErrors: any = {
+      name: "",
+      phone: "",
+      dob: "",
+      password: "",
+      confirmPassword: "",
+      hotelId: "",
+    };
+
+    let hasError = false;
+
+    if (!name.trim()) {
+      newErrors.name = "Vui lòng nhập tên người dùng";
+      hasError = true;
+    }
+
+    if (!/^[0-9]{9,11}$/.test(phone)) {
+      newErrors.phone = "Số điện thoại không hợp lệ";
+      hasError = true;
+    }
+
+    if (!dob) {
+      newErrors.dob = "Vui lòng chọn ngày sinh";
+      hasError = true;
+    }
 
     if (password.length < 8) {
-      setError("Mật khẩu phải ít nhất 8 ký tự");
-      return;
+      newErrors.password = "Mật khẩu phải ít nhất 8 ký tự";
+      hasError = true;
     }
 
     if (password !== confirmPassword) {
-      setError("Mật khẩu không khớp");
-      return;
+      newErrors.confirmPassword = "Mật khẩu không khớp";
+      hasError = true;
     }
+
+    if ((role === "admin" || role === "staff") && !hotelId.trim()) {
+      newErrors.hotelId = "Vui lòng nhập mã chi nhánh";
+      hasError = true;
+    }
+
+    if ((role === "admin" || role === "staff") && !secretKey.trim()) {
+      newErrors.secretKey = "Vui lòng nhập mã xác thực nội bộ";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
 
     try {
       const res = await fetch("http://127.0.0.1:8000/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           email,
@@ -160,6 +206,10 @@ export default function RegisterPage() {
             role === "admin" || role === "staff"
               ? Number(hotelId)
               : null,
+          secret_key:
+            role === "admin" || role === "staff"
+              ? secretKey
+              : null,
         }),
       });
 
@@ -169,7 +219,6 @@ export default function RegisterPage() {
         throw new Error(data.detail || "Đăng ký thất bại");
       }
 
-      // Thành công → chuyển sang login
       router.push("/login");
 
     } catch (err: any) {
@@ -178,7 +227,7 @@ export default function RegisterPage() {
   };
 
   // =========================
-  // STEP 3: FORM
+  // STEP 3 FORM
   // =========================
   return (
     <div className={styles.container}>
@@ -190,85 +239,126 @@ export default function RegisterPage() {
 
       <form className={styles.form} onSubmit={handleRegister}>
 
+        {/* NAME */}
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Tên người dùng:</label>
+          <label>Tên người dùng:</label>
           <input
-            className={styles.input}
-            placeholder="Tên người dùng"
+            className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
             value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            onChange={(e) => {
+              setName(e.target.value);
+              setErrors({ ...errors, name: "" });
+            }}
           />
+          <p className={styles.error}>{errors.name}</p>
         </div>
 
+        {/* PHONE */}
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Số điện thoại:</label>
+          <label>Số điện thoại:</label>
           <input
-            className={styles.input}
-            placeholder="Số điện thoại"
+            className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setErrors({ ...errors, phone: "" });
+            }}
           />
+          <p className={styles.error}>{errors.phone}</p>
         </div>
 
+        {/* DOB */}
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Ngày sinh:</label>
+          <label>Ngày sinh:</label>
           <input
             type="date"
-            className={styles.input}
+            className={`${styles.input} ${errors.dob ? styles.inputError : ""}`}
             value={dob}
-            onChange={(e) => setDob(e.target.value)}
-            required
+            onChange={(e) => {
+              setDob(e.target.value);
+              setErrors({ ...errors, dob: "" });
+            }}
           />
+          <p className={styles.error}>{errors.dob}</p>
         </div>
 
+        {/* PASSWORD */}
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Mật khẩu:</label>
+          <label>Mật khẩu:</label>
           <input
             type="password"
-            className={styles.input}
-            placeholder="Mật khẩu"
+            className={`${styles.input} ${
+              errors.password ? styles.inputError : ""
+            }`}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors({ ...errors, password: "" });
+            }}
           />
+          <p className={styles.error}>{errors.password}</p>
         </div>
 
+        {/* CONFIRM PASSWORD */}
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Xác nhận mật khẩu:</label>
+          <label>Xác nhận mật khẩu:</label>
           <input
             type="password"
-            className={styles.input}
-            placeholder="Xác nhận mật khẩu"
+            className={`${styles.input} ${
+              errors.confirmPassword ? styles.inputError : ""
+            }`}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setErrors({ ...errors, confirmPassword: "" });
+            }}
           />
+          <p className={styles.error}>{errors.confirmPassword}</p>
         </div>
 
+        {/* HOTEL ID */}
         {(role === "admin" || role === "staff") && (
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Mã chi nhánh:</label>
-            <input
-              className={styles.input}
-              placeholder="Nhập mã chi nhánh"
-              value={hotelId}
-              onChange={(e) => setHotelId(e.target.value)}
-              required
-            />
-          </div>
+          <>
+            {/* HOTEL ID */}
+            <div className={styles.inputGroup}>
+              <label>Mã chi nhánh:</label>
+              <input
+                className={`${styles.input} ${
+                  errors.hotelId ? styles.inputError : ""
+                }`}
+                value={hotelId}
+                onChange={(e) => {
+                  setHotelId(e.target.value);
+                  setErrors({ ...errors, hotelId: "" });
+                }}
+              />
+              <p className={styles.error}>{errors.hotelId}</p>
+            </div>
+
+            {/* SECRET KEY */}
+            <div className={styles.inputGroup}>
+              <label>Mã xác thực nội bộ:</label>
+              <input
+                type="password"
+                className={`${styles.input} ${
+                  errors.secretKey ? styles.inputError : ""
+                }`}
+                value={secretKey}
+                onChange={(e) => {
+                  setSecretKey(e.target.value);
+                  setErrors({ ...errors, secretKey: "" });
+                }}
+              />
+              <p className={styles.error}>{errors.secretKey}</p>
+            </div>
+          </>
         )}
 
-        {error && <p className={styles.error}>{error}</p>}
+        <p className={styles.error}>{error}</p>
 
-        <button
-          type="submit"
-          className={styles.submitBtn}
-        >
+        <button type="submit" className={styles.submitBtn}>
           Đăng ký
         </button>
-
       </form>
 
       <button

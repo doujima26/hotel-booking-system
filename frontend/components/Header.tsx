@@ -1,22 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const [role, setRole] = useState<string | null>(null);
+  const router = useRouter();
+  const { user, logout, loading } = useAuth();
+
   const [showAccount, setShowAccount] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
 
-  useEffect(() => {
-    const savedRole = localStorage.getItem("role");
-    setRole(savedRole);
-  }, []);
+  if (loading) return null;
 
+  // ===== ACCOUNT CLICK =====
   const handleAccountClick = async () => {
     const token = localStorage.getItem("access_token");
-
     if (!token) return;
 
     try {
@@ -32,7 +32,6 @@ export default function Header() {
         throw new Error("Không thể lấy thông tin");
       }
 
-      setUserInfo(data);
       setShowAccount(true);
 
     } catch (err) {
@@ -40,16 +39,9 @@ export default function Header() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("role");
-    window.location.reload();
-  };
-
   return (
     <>
       <header className={styles.header}>
-
         <div className={styles.logo}>
           Continental.com
         </div>
@@ -62,14 +54,17 @@ export default function Header() {
         </div>
 
         <nav className={styles.nav}>
-          <Link href="/" className={styles.link}>Trang chủ</Link>
-          <Link href="#" className={styles.link}>Khách sạn</Link>
-          <Link href="#" className={styles.link}>Đặt phòng</Link>
-          <Link href="#" className={styles.link}>Dịch vụ</Link>
+          <Link href="/" className={styles.link}>
+            Trang chủ
+          </Link>
 
           {/* ===== GUEST ===== */}
-          {!role && (
+          {!user && (
             <>
+              <Link href="#" className={styles.link}>Khách sạn</Link>
+              <Link href="#" className={styles.link}>Đặt phòng</Link>
+              <Link href="#" className={styles.link}>Dịch vụ</Link>
+
               <Link href="/login" className={styles.link}>
                 Đăng nhập
               </Link>
@@ -80,19 +75,53 @@ export default function Header() {
           )}
 
           {/* ===== USER ===== */}
-          {role === "user" && (
-            <button
-              className={styles.accountBtn}
-              onClick={handleAccountClick}
-            >
-              Tài khoản
-            </button>
+          {user?.role === "user" && (
+            <>
+              <Link href="#" className={styles.link}>Khách sạn</Link>
+              <Link href="#" className={styles.link}>Đặt phòng</Link>
+              <Link href="#" className={styles.link}>Dịch vụ</Link>
+
+              <button
+                className={styles.accountBtn}
+                onClick={() => setShowAccount(true)}
+              >
+                Tài khoản
+              </button>
+            </>
+          )}
+
+          {/* ===== ADMIN ===== */}
+          {user?.role === "admin" && (
+            <>
+              <Link href="/admin/invoices" className={styles.link}>
+                Hóa đơn
+              </Link>
+
+              <Link href="/admin/rooms" className={styles.link}>
+                Phòng
+              </Link>
+
+              <Link href="/admin/services" className={styles.link}>
+                Dịch vụ
+              </Link>
+
+              <Link href="/admin/staff" className={styles.link}>
+                Nhân viên
+              </Link>
+
+              <button
+                className={styles.accountBtn}
+                onClick={() => setShowAccount(true)}
+              >
+                Tài khoản
+              </button>
+            </>
           )}
         </nav>
       </header>
 
       {/* ===== ACCOUNT POPUP ===== */}
-      {showAccount && userInfo && (
+      {showAccount && user && (
         <div className={styles.overlay}>
           <div className={styles.accountCard}>
 
@@ -101,26 +130,28 @@ export default function Header() {
             </div>
 
             <div className={styles.accountBody}>
-
               <div className={styles.avatar}>
                 <img src="/images/avt.png" alt="avatar" />
               </div>
 
               <div className={styles.info}>
-                <h2>{userInfo.name}</h2>
-                <p><span>Vai trò:</span> Khách hàng</p>
-                <p><span>DOB:</span> {userInfo.dob}</p>
-                <p><span>Email:</span> {userInfo.email}</p>
-                <p><span>SĐT:</span> {userInfo.phone_number}</p>
+                <h2>{user.name}</h2>
+                <p><span>Vai trò:</span> {user.role}</p>
+                <p><span>DOB:</span> {user.dob}</p>
+                <p><span>Email:</span> {user.email}</p>
+                <p><span>SĐT:</span> {user.phone_number}</p>
 
                 <button
                   className={styles.logoutBtn}
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    setShowAccount(false);
+                    router.push("/");
+                  }}
                 >
                   Đăng xuất
                 </button>
               </div>
-
             </div>
 
             <button

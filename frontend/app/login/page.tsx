@@ -3,9 +3,12 @@
 import styles from "./login.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,35 +16,21 @@ export default function LoginPage() {
 const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  try {
-    const res = await fetch("http://127.0.0.1:8000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
+  const res = await fetch("http://127.0.0.1:8000/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.detail || "Đăng nhập thất bại");
-      return;
-    }
-
-    // Lưu token
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("role", data.role);
-
-    // Redirect
-    window.location.href = "/";
-
-  } catch (error) {
-    console.error(error);
+  if (!res.ok) {
+    alert(data.detail);
+    return;
   }
+
+  login(data.access_token); 
+  router.push("/");
 };
 
   return (

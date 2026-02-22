@@ -1,22 +1,23 @@
+"use client";
+
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { AuthProvider } from "../context/AuthContext";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body>
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <AuthProvider>
           <Header />
-
-          <main style={{ flex: 1 }}>
-            <div className="pageContainer">
-              {children}
-            </div>
-          </main>
-
+          {children}
           <Footer />
-        </div>
+        </AuthProvider>
       </body>
     </html>
   );
