@@ -8,334 +8,195 @@ import api from "@/lib/api";
 export default function AdminRooms() {
   const [rooms, setRooms] = useState<any[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
   const [roomNumber, setRoomNumber] = useState("");
   const [roomType, setRoomType] = useState("");
   const [price, setPrice] = useState("");
 
   const router = useRouter();
   const pathname = usePathname();
-
   const isEdit = pathname === "/admin/rooms";
   const isStatus = pathname === "/admin/rooms/status";
 
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("access_token")
-      : null;
+  const [errors, setErrors] = useState({ roomNumber: "", roomType: "", price: "" });
 
-  const [errors, setErrors] = useState({
-    roomNumber: "",
-    roomType: "",
-    price: "",
-  });
-
-  // ==============================
-  // LOAD ROOMS
-  // ==============================
   const loadRooms = async () => {
     try {
       const res = await api.get("/rooms/get_my_branch_rooms");
       setRooms(res.data);
     } catch (error) {
       console.error(error);
-      alert("Lỗi tải danh sách phòng");
     }
   };
 
-  useEffect(() => {
-    loadRooms();
-  }, []);
+  useEffect(() => { loadRooms(); }, []);
 
-  // ==============================
-  // RESET FORM
-  // ==============================
   const resetForm = () => {
     setSelectedId(null);
     setRoomNumber("");
     setRoomType("");
     setPrice("");
-    setErrors({
-      roomNumber: "",
-      roomType: "",
-      price: "",
-    });
+    setErrors({ roomNumber: "", roomType: "", price: "" });
   };
 
-  // ==============================
-  // VALIDATE
-  // ==============================
   const validate = () => {
-    let newErrors = {
-      roomNumber: "",
-      roomType: "",
-      price: "",
-    };
-
+    let newErrors = { roomNumber: "", roomType: "", price: "" };
     let hasError = false;
-
-    if (!roomNumber.trim()) {
-      newErrors.roomNumber = "Vui lòng nhập số phòng";
-      hasError = true;
-    }
-
-    if (!roomType.trim()) {
-      newErrors.roomType = "Vui lòng nhập loại phòng";
-      hasError = true;
-    }
-
-    if (!price || Number(price) <= 0) {
-      newErrors.price = "Giá phải lớn hơn 0";
-      hasError = true;
-    }
-
+    if (!roomNumber.trim()) { newErrors.roomNumber = "Nhập số phòng"; hasError = true; }
+    if (!roomType.trim()) { newErrors.roomType = "Nhập loại phòng"; hasError = true; }
+    if (!price || Number(price) <= 0) { newErrors.price = "Giá phải > 0"; hasError = true; }
     setErrors(newErrors);
     return !hasError;
   };
 
-  // ==============================
-  // CREATE ROOM
-  // ==============================
   const createRoom = async () => {
     if (!validate()) return;
-
     try {
-      await api.post("/rooms", {
-        room_number: roomNumber,
-        room_type: roomType,
-        price: Number(price),
-        status: "available",
-      });
-
-      alert("Tạo phòng thành công!");
+      await api.post("/rooms", { room_number: roomNumber, room_type: roomType, price: Number(price), status: "available" });
       resetForm();
       loadRooms();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.detail || "Tạo phòng thất bại";
-      alert(message);
-    }
+    } catch (error: any) { alert(error.response?.data?.detail || "Thất bại"); }
   };
 
-  // ==============================
-  // UPDATE ROOM
-  // ==============================
   const updateRoom = async () => {
-    if (!selectedId) return;
-    if (!validate()) return;
-
+    if (!selectedId || !validate()) return;
     try {
-      const selectedRoom = rooms.find(
-        (r) => r.room_id === selectedId
-      );
-
-      await api.put(`/rooms/${selectedId}`, {
-        room_number: roomNumber,
-        room_type: roomType,
-        price: Number(price),
-        status: selectedRoom?.status || "available",
-      });
-
-      alert("Cập nhật thành công!");
+      const selectedRoom = rooms.find((r) => r.room_id === selectedId);
+      await api.put(`/rooms/${selectedId}`, { room_number: roomNumber, room_type: roomType, price: Number(price), status: selectedRoom?.status || "available" });
       resetForm();
       loadRooms();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.detail || "Cập nhật thất bại";
-      alert(message);
-    }
+    } catch (error: any) { alert(error.response?.data?.detail || "Thất bại"); }
   };
 
-  // ==============================
-  // DELETE ROOM
-  // ==============================
   const deleteRoom = async () => {
-    if (!selectedId) return;
-    if (!confirm("Bạn có chắc muốn xóa phòng này?"))
-      return;
-
+    if (!selectedId || !confirm("Xác nhận xóa phòng này?")) return;
     try {
       await api.delete(`/rooms/${selectedId}`);
-
-      alert("Xóa phòng thành công!");
       resetForm();
       loadRooms();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.detail || "Xóa thất bại";
-      alert(message);
-    }
+    } catch (error: any) { alert(error.response?.data?.detail || "Thất bại"); }
   };
 
   return (
     <div className={styles.adminWrapper}>
-      {/* HEADER */}
-      <div className={styles.headerCard}>
-        <div className={styles.headerTitle}>
-          Chỉnh sửa phòng
+      {/* HEADER SECTION */}
+      <div className={styles.headerArea}>
+        <div>
+          <h1 className={styles.pageTitle}>Quản lý phòng</h1>
+          <p className={styles.pageSubtitle}>Thiết lập và chỉnh sửa danh sách phòng trong chi nhánh</p>
         </div>
 
-        <div className={styles.headerButtons}>
+        <div className={styles.tabGroup}>
           <button
-            className={
-              isStatus
-                ? styles.headerBtnDark
-                : styles.headerBtnLight
-            }
-            onClick={() =>
-              router.push("/admin/rooms/status")
-            }
+            className={isStatus ? styles.activeTab : styles.tab}
+            onClick={() => router.push("/admin/rooms/status")}
           >
             Trạng thái phòng
           </button>
-
           <button
-            className={
-              isEdit
-                ? styles.headerBtnDark
-                : styles.headerBtnLight
-            }
-            onClick={() =>
-              router.push("/admin/rooms")
-            }
+            className={isEdit ? styles.activeTab : styles.tab}
+            onClick={() => router.push("/admin/rooms")}
           >
             Chỉnh sửa phòng
           </button>
         </div>
       </div>
 
-      {/* FORM */}
-      <div className={styles.formSection}>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>
-            Số phòng
-          </label>
-          <input
-            className={styles.inputField}
-            value={roomNumber}
-            onChange={(e) => {
-              setRoomNumber(e.target.value);
-              setErrors({
-                ...errors,
-                roomNumber: "",
-              });
-            }}
-          />
-          {errors.roomNumber && (
-            <div className={styles.errorText}>
-              {errors.roomNumber}
-            </div>
-          )}
-        </div>
+      <div className={styles.contentGrid}>
+        {/* LEFT: FORM SECTION */}
+        <div className={styles.formCard}>
+          <h2 className={styles.cardTitle}>{selectedId ? "Cập nhật phòng" : "Thêm phòng mới"}</h2>
+          
+          <div className={styles.inputGroup}>
+            <label>Số phòng</label>
+            <input
+              placeholder="Ví dụ: 101"
+              value={roomNumber}
+              onChange={(e) => { setRoomNumber(e.target.value); setErrors({ ...errors, roomNumber: "" }); }}
+              className={errors.roomNumber ? styles.inputError : ""}
+            />
+            {errors.roomNumber && <span className={styles.errorText}>{errors.roomNumber}</span>}
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>
-            Loại phòng
-          </label>
-          <input
-            className={styles.inputField}
-            value={roomType}
-            onChange={(e) => {
-              setRoomType(e.target.value);
-              setErrors({
-                ...errors,
-                roomType: "",
-              });
-            }}
-          />
-          {errors.roomType && (
-            <div className={styles.errorText}>
-              {errors.roomType}
-            </div>
-          )}
-        </div>
+          <div className={styles.inputGroup}>
+            <label>Loại phòng</label>
+            <input
+              placeholder="Ví dụ: Deluxe Suite"
+              value={roomType}
+              onChange={(e) => { setRoomType(e.target.value); setErrors({ ...errors, roomType: "" }); }}
+              className={errors.roomType ? styles.inputError : ""}
+            />
+            {errors.roomType && <span className={styles.errorText}>{errors.roomType}</span>}
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>
-            Giá (VND)
-          </label>
-          <input
-            type="number"
-            className={styles.inputField}
-            value={price}
-            onChange={(e) => {
-              setPrice(e.target.value);
-              setErrors({
-                ...errors,
-                price: "",
-              });
-            }}
-          />
-          {errors.price && (
-            <div className={styles.errorText}>
-              {errors.price}
-            </div>
-          )}
-        </div>
+          <div className={styles.inputGroup}>
+            <label>Giá (VND)</label>
+            <input
+              type="number"
+              placeholder="Nhập giá phòng"
+              value={price}
+              onChange={(e) => { setPrice(e.target.value); setErrors({ ...errors, price: "" }); }}
+              className={errors.price ? styles.inputError : ""}
+            />
+            {errors.price && <span className={styles.errorText}>{errors.price}</span>}
+          </div>
 
-        <div className={styles.buttonGroup}>
-          <button
-            className={styles.actionBtn}
-            onClick={createRoom}
-          >
-            Thêm mới
-          </button>
-          <button
-            className={styles.actionBtn}
-            onClick={updateRoom}
-          >
-            Cập nhật
-          </button>
-          <button
-            className={styles.actionBtn}
-            onClick={deleteRoom}
-          >
-            Xóa
-          </button>
-          <button
-            className={styles.actionBtn}
-            onClick={loadRooms}
-          >
-            Làm mới
-          </button>
-        </div>
-      </div>
-
-      {/* TABLE */}
-      <div className={styles.tableCard}>
-        <div className={styles.tableHeader}>
-          <div className={styles.tableHeaderRow}>
-            <div>ID</div>
-            <div>Số phòng</div>
-            <div>Loại phòng</div>
-            <div>Giá (VND)</div>
-            <div>Trạng thái</div>
+          <div className={styles.formActions}>
+            {!selectedId ? (
+              <button className={styles.btnPrimary} onClick={createRoom}>Tạo phòng mới</button>
+            ) : (
+              <>
+                <button className={styles.btnUpdate} onClick={updateRoom}>Lưu cập nhật</button>
+                <button className={styles.btnDelete} onClick={deleteRoom}>Xóa phòng</button>
+              </>
+            )}
+            <button className={styles.btnReset} onClick={resetForm}>Hủy bỏ</button>
           </div>
         </div>
 
-        <div className={styles.tableBody}>
-          {rooms.map((room) => (
-            <div
-              key={room.room_id}
-              className={`${styles.tableRow} ${
-                selectedId === room.room_id
-                  ? styles.selectedRow
-                  : ""
-              }`}
-              onClick={() => {
-                setSelectedId(room.room_id);
-                setRoomNumber(room.room_number);
-                setRoomType(room.room_type);
-                setPrice(room.price);
-              }}
-            >
-              <div>{room.room_id}</div>
-              <div>{room.room_number}</div>
-              <div>{room.room_type}</div>
-              <div>{room.price}</div>
-              <div>{room.status}</div>
-            </div>
-          ))}
+        {/* RIGHT: TABLE SECTION */}
+        <div className={styles.tableCard}>
+          <div className={styles.tableHeader}>
+            <h3>Danh sách chi tiết</h3>
+            <button className={styles.btnRefresh} onClick={loadRooms}>Làm mới ↻</button>
+          </div>
+          
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>SỐ PHÒNG</th>
+                  <th>LOẠI PHÒNG</th>
+                  <th>GIÁ PHÒNG</th>
+                  <th>TRẠNG THÁI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rooms.map((room) => (
+                  <tr
+                    key={room.room_id}
+                    className={selectedId === room.room_id ? styles.selectedRow : ""}
+                    onClick={() => {
+                      setSelectedId(room.room_id);
+                      setRoomNumber(room.room_number);
+                      setRoomType(room.room_type);
+                      setPrice(room.price);
+                    }}
+                  >
+                    <td>#{room.room_id}</td>
+                    <td className={styles.bold}>{room.room_number}</td>
+                    <td>{room.room_type}</td>
+                    <td>{Number(room.price).toLocaleString()}đ</td>
+                    <td>
+                      <span className={`${styles.statusBadge} ${styles[room.status]}`}>
+                        {room.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -1,47 +1,175 @@
 .footer {
-
-  margin-top: 80px;
-  padding: 60px 80px;
+  margin-top: 100px;
   color: white;
-  
-
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                    url('/images/footer-bg.jpg');
-  
-
-  background-size: cover;      /* Ảnh phủ kín toàn bộ footer */
-  background-position: center; /* Ảnh căn giữa */
-  background-repeat: no-repeat;
-  
   position: relative;
-  left: 0;
-  bottom: 0;
+
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.98)), 
+              url('/images/footer-bg.jpg') center/cover fixed;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding-top: 80px;
+  font-family: 'Inter', sans-serif;
 }
 
 .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 60px;
+  padding-bottom: 60px;
 }
 
+/* BRAND COLUMN */
 .logo {
-  font-size: 22px;
-  font-weight: bold;
-  font-style: italic;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
-.copy {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #999;
+.logo span {
+  color: #6ec1e4;
 }
 
-.contactTitle {
-  font-weight: 600;
-  margin-bottom: 10px;
+.tagline {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #aaa;
+  margin-bottom: 25px;
+}
+
+.socials {
+  display: flex;
+  gap: 12px;
+}
+
+.socialIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  color: white;
+  text-decoration: none;
+}
+
+.socialIcon:hover {
+  background: #6ec1e4;
+  border-color: #6ec1e4;
+  transform: translateY(-3px);
+}
+
+/* GENERAL COLUMN STYLES */
+.columnTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.columnTitle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 30px;
+  height: 2px;
+  background: #6ec1e4;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+}
+
+.links li {
+  margin-bottom: 12px;
+}
+
+.links a {
+  text-decoration: none;
+  color: #aaa;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.links a:hover {
+  color: #6ec1e4;
+  padding-left: 5px;
 }
 
 .contactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
   font-size: 14px;
-  color: #ccc;
+  color: #aaa;
+}
+
+.icon {
+  font-size: 16px;
+}
+
+/* BOTTOM BAR */
+.bottomBar {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 30px 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.bottomContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+}
+
+.author {
+  color: #888;
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .columnTitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .socials {
+    justify-content: center;
+  }
+  
+  .bottomContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

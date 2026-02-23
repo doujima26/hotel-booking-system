@@ -1,392 +1,259 @@
 .container {
-  background: #f5f5f5;
+  background: #fcfcfd;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
 }
 
 /* HERO */
 .heroWrapper {
-  padding: 20px 40px;
+  padding: 30px;
 }
+
 .hero {
   position: relative;
-  height: 650px;
+  height: 750px;
   background: url("/images/hero.jpg") center/cover no-repeat;
-
-  border-radius: 20px;   
-  overflow: hidden;         
-
+  border-radius: 40px;
+  overflow: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.heroSubTitle {
+  color: #fff;
+  letter-spacing: 5px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  opacity: 0.9;
 }
 
 .heroTitle {
-  bottom: 60px;
-  position: relative;
   color: white;
-  font-size: 42px;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 64px;
+  line-height: 1.1;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.heroTitle span {
+  color: #6ec1e4;
 }
 
 /* SEARCH BOX */
 .searchBox {
   position: absolute;
-  bottom:50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 950px;
-  background: #f4d9d9;
-  padding: 28px 40px;
-  border-radius: 22px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  bottom: 40px;
+  width: 90%;
+  max-width: 1100px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 35px;
+  border-radius: 30px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   z-index: 3;
 }
 
-/* Tabs */
 .searchTabs {
   display: flex;
-  gap: 30px;
-  font-size: 14px;
-  margin-bottom: 15px;
+  gap: 40px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
 }
 
-.searchTabs span {
+.tabItem {
   cursor: pointer;
-  color: #444;
-}
-
-.searchTabs .active {
   font-weight: 600;
+  font-size: 14px;
+  color: #666;
+  transition: 0.3s;
 }
 
-/* Divider */
-.searchDivider {
-  height: 1px;
-  background: rgba(0,0,0,0.2);
-  margin-bottom: 20px;
+.activeTab {
+  color: #000;
+  position: relative;
 }
 
-/* Form row */
+.activeTab::after {
+  content: "";
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #6ec1e4;
+}
+
 .searchRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 25px;
+  gap: 20px;
 }
 
-/* Input block */
 .searchField {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  flex: 1;
 }
 
 .searchField label {
-  margin-bottom: 6px;
-  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #999;
+  margin-bottom: 8px;
 }
 
 .searchField input {
-  padding: 12px 18px;
-  border-radius: 25px;
+  background: transparent;
   border: none;
-  background: #e9e9e9;
-  outline: none;
-  font-size: 13px;
-}
-
-/* Button */
-.searchBtn {
-  background: #6ec1e4;
-  border: none;
-  padding: 16px 28px;
-  border-radius: 16px;
-  color: white;
+  font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.searchBtn:hover {
-  background: #4ba8d0;
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  font-size: 13px;
-}
-
-.inputGroup input {
-  margin-top: 6px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  border: none;
   outline: none;
-  background: white;
+  color: #333;
+}
+
+.searchDivider {
+  width: 1px;
+  height: 40px;
+  background: #ddd;
 }
 
 .searchBtn {
-  background: #6ec1e4;
+  background: #1a1a1a;
   color: white;
   border: none;
-  padding: 12px 22px;
-  border-radius: 12px;
+  padding: 18px 40px;
+  border-radius: 20px;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .searchBtn:hover {
-  background: #4ba8d0;
+  background: #6ec1e4;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(110, 193, 228, 0.3);
 }
 
 /* HOTEL SECTION */
 .hotelSection {
-  margin-top: 120px;
-  padding: 0 80px 80px;
+  padding: 80px 10%;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
 }
 
 .sectionTitle {
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 800;
 }
 
-.tabs {
+.filterTabs {
   display: flex;
-  gap: 20px;
+  gap: 25px;
+  color: #888;
   font-size: 13px;
-  margin-bottom: 30px;
+  font-weight: 600;
 }
 
-.activeTab {
-  border-bottom: 2px solid black;
-  font-weight: 600;
+.filterActive {
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 8px;
 }
 
 .hotelGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
 }
 
 /* CARD */
 .card {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: 0.4s ease;
+  background: white;
+  border-radius: 25px;
+  padding: 12px;
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
 .cardImage {
-  height: 250px;
+  height: 280px;
+  border-radius: 20px;
   background-size: cover;
   background-position: center;
-  transition: 0.4s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.card:hover .cardImage {
-  transform: scale(1.05);
-}
-
-/* Overlay gradient */
-.cardOverlay {
+.priceBadge {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 20px;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.85),
-    rgba(0,0,0,0.2),
-    transparent
-  );
-  color: white;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px 15px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
 }
 
-/* Content row */
-.cardContent {
+.cardInfo {
+  padding: 20px 10px 10px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
 }
 
-.cardTitle {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.cardDate {
-  font-size: 12px;
-  color: #ccc;
-  margin-bottom: 6px;
-}
-
-.cardPrice {
+.cardText h3 {
   font-size: 16px;
   font-weight: 700;
-  color: #ffd700;
+  margin-bottom: 4px;
 }
 
-/* Arrow button */
+.cardText p {
+  font-size: 13px;
+  color: #888;
+}
+
 .cardArrow {
-  background: rgba(255,255,255,0.2);
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #eee;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   transition: 0.3s;
 }
 
-.cardArrow:hover {
-  background: #6ec1e4;
-}
-
-/* =========================
-   USER SEARCH SECTION
-========================= */
-
-.userSearchSection {
-  margin-top: 60px;
-  display: flex;
-  justify-content: center;
-}
-
-.userSearchBox {
-  background: #e7c9c9;
-  width: 1000px;
-  padding: 40px;
-  border-radius: 20px;
-  display: flex;
-  align-items: flex-end;
-  gap: 30px;
-  justify-content: center;
-}
-
-.userField {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.userField label {
-  font-weight: 600;
-}
-
-.userField input,
-.userField select {
-  width: 220px;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: #f5e3e3;
-  font-size: 14px;
-}
-
-.userSearchBtn {
-  background: #9fd0e5;
-  padding: 12px 30px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.userSearchBtn:hover {
-  background: #7fb8d4;
-}
-
-.roomSection {
-  background: #e8c7c7;
-  padding: 40px;
-  border-radius: 25px;
-  margin-top: 40px;
-}
-
-.sectionTitle {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.sliderWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.sliderContainer {
-  overflow: hidden;
-  width: 100%;
-}
-
-.sliderTrack {
-  display: flex;
-}
-
-.roomCard {
-  min-width: 25%;
-  padding: 12px;
-  box-sizing: border-box;
-}
-
-.roomCard img {
-  width: 100%;
-  border-radius: 18px;
-  object-fit: cover;
-  height: 240px;
-}
-
-.cardOverlay {
-  position: relative;
-  margin-top: -60px;
-  padding: 10px;
+.card:hover .cardArrow {
+  background: #1a1a1a;
   color: white;
-  font-weight: 500;
-}
-
-.price {
-  color: #ffd700;
-}
-
-.arrowLeft,
-.arrowRight {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 2;
-}
-
-.arrowLeft {
-  left: -20px;
-}
-
-.arrowRight {
-  right: -20px;
+  border-color: #1a1a1a;
 }

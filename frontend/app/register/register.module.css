@@ -1,125 +1,206 @@
-/* =====================
-   CONTAINER CHUNG
-===================== */
-.container {
-  min-height: 80vh;
+.pageWrapper {
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
 }
 
-/* =====================
-   STEP EMAIL
-===================== */
-.emailBox {
-  width: 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.emailInput {
+.registerCard {
+  background: white;
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+  max-width: 500px;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-.primaryBtn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #a6d1e6;
-  font-weight: 500;
-}
-
-.primaryBtn:hover {
-  background: #7fb8d4;
-}
-
-/* =====================
-   STEP ROLE
-===================== */
-.roleBox {
-  width: 300px;
+/* Stepper */
+.stepper {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
-.roleBtn {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #e2e2e2;
-}
-
-.roleBtn:hover {
-  background: #d3d3d3;
-}
-
-/* =====================
-   FORM
-===================== */
-.form {
+.step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eee;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 350px;
-}
-
-.form input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-.submitBtn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #a6d1e6;
-  font-weight: 500;
-}
-
-.submitBtn:hover {
-  background: #7fb8d4;
-}
-
-/* =====================
-   BACK BUTTON
-===================== */
-.backBtn {
-  width: 60px;
-  background: #ddd;
-  border-radius: 8px;
-  padding: 6px;
-}
-
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2px;
-}
-
-.error {
-  color: red;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
   font-size: 14px;
-  min-height: 1px;
-  margin-top: 4px;
+  color: #888;
+  transition: 0.3s;
+}
+
+.line {
+  flex: 0.1;
+  height: 2px;
+  background: #eee;
+  margin: 0 10px;
+}
+
+.active {
+  background: #1a1a1a;
+  color: white;
+  transform: scale(1.1);
+}
+
+.completed {
+  background: #4caf50;
+  color: white;
+}
+
+/* Content */
+.content {
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Inputs */
+.inputGroup {
+  text-align: left;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #eee;
+  outline: none;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+.inputGroup input:focus {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
 }
 
 .inputError {
-  border: 1px solid red;
+  border-color: #ff4d4f !important;
+}
+
+.errorMessage {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Buttons */
+.primaryBtn {
+  width: 100%;
+  padding: 14px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.primaryBtn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.backLink:hover {
+  color: #000;
+}
+
+/* Role Selection */
+.roleGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.roleCard {
+  background: #fff;
+  border: 1.5px solid #eee;
+  padding: 16px;
+  border-radius: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.roleCard:hover {
+  border-color: #1a1a1a;
+  background: #fafafa;
+  transform: translateX(5px);
+}
+
+.roleLabel {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.roleDesc {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Form Layout */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.mainError {
+  color: #ff4d4f;
+  background: #fff1f0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 15px;
 }

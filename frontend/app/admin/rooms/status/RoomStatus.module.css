@@ -1,110 +1,206 @@
-.wrapper {
-  padding: 60px 80px;
+.adminWrapper {
+  padding: 40px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
-.headerCard {
+/* HEADER Area - Shared with AdminRooms */
+.headerArea {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.pageSubtitle {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.tabGroup {
+  display: flex;
+  background: #e2e8f0;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.tab, .activeTab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab { color: #64748b; background: transparent; }
+.activeTab { background: white; color: #0f172a; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+
+/* ACTION BAR */
+.actionBar {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
 }
 
-.headerTitle {
-  font-size: 26px;
-  font-weight: 600;
+.selectedInfo p {
+  color: #64748b;
+  font-size: 14px;
 }
 
-.headerButtons {
+.selectedInfo strong {
+  color: #1e293b;
+}
+
+.actionButtons {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
-.headerBtnLight {
-  background: #c6def3;
-  padding: 10px 20px;
-  border-radius: 20px;
+.checkInBtn, .checkOutBtn {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 700;
   border: none;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.headerBtnDark {
-  background: #2d8cf0;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
+.checkInBtn { background: #3b82f6; color: white; }
+.checkInBtn:hover:not(:disabled) { background: #2563eb; }
+
+.checkOutBtn { background: #ef4444; color: white; }
+.checkOutBtn:hover:not(:disabled) { background: #dc2626; }
+
+button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(1);
 }
 
-/* ===== GRID ===== */
-
+/* GRID LIST */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  margin-bottom: 60px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .card {
-  background: #f4f0c2;
-  padding: 30px;
+  background: white;
   border-radius: 20px;
-  cursor: pointer;
-  transition: 0.2s ease;
+  padding: 24px;
   border: 2px solid transparent;
-  min-height: 180px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
 
 .selected {
-  border: 3px solid #000;
+  border-color: #3b82f6;
+  background: #eff6ff;
 }
 
-/* ===== ACTION BUTTONS ===== */
-
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 80px;
-}
-
-.checkInBtn {
-  background: #6cc4df;
-  padding: 15px 60px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.checkOutBtn {
-  background: #ff6b6b;
-  padding: 15px 60px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.headerCard {
-  background: #e6d3d3;
-  border: 2px solid #444;
-  border-radius: 18px;
-  padding: 20px 30px;
+.cardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 15px;
 }
 
-.headerTitle {
-  font-size: 22px;
+.roomLabel {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.confirmed { background: #fef9c3; color: #854d0e; } /* Chờ check-in */
+.checked_in { background: #dcfce7; color: #166534; } /* Đang ở */
+
+.cardBody {
+  margin-bottom: 20px;
+}
+
+.guestName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.infoLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.cardFooter {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+
+.bookingId {
+  font-size: 11px;
+  color: #94a3b8;
   font-weight: 600;
 }
+
+/* UTILS */
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 100px;
+  color: #94a3b8;
+  background: white;
+  border-radius: 20px;
+  border: 2px dashed #e2e8f0;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }

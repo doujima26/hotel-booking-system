@@ -3,53 +3,45 @@ import styles from "../app/page.module.css";
 export default function GuestHome() {
   return (
     <main className={styles.container}>
-
-      {/* HERO */}
+      {/* HERO SECTION */}
       <section className={styles.heroWrapper}>
         <div className={styles.hero}>
           <div className={styles.overlay}></div>
-
-          <h1 className={styles.heroTitle}>
-            ITS FOR TIME FOR ADVENTURES
-            <br />
-            & EXPERIENCES
-          </h1>
+          
+          <div className={styles.heroContent}>
+            <p className={styles.heroSubTitle}>DISCOVER THE WORLD</p>
+            <h1 className={styles.heroTitle}>
+              IT'S TIME FOR <br />
+              <span>ADVENTURES & EXPERIENCES</span>
+            </h1>
+          </div>
 
           {/* SEARCH BOX */}
           <div className={styles.searchBox}>
-
-            {/* Tabs */}
             <div className={styles.searchTabs}>
-              <span className={styles.activeTab}>Khách sạn</span>
-              <span>Chuyến bay</span>
-              <span>Đặt phòng</span>
+              <span className={`${styles.tabItem} ${styles.activeTab}`}>Khách sạn</span>
+              <span className={styles.tabItem}>Chuyến bay</span>
+              <span className={styles.tabItem}>Đặt phòng</span>
             </div>
 
-            {/* Divider */}
-            <div className={styles.searchDivider}></div>
-
-            {/* Row */}
             <div className={styles.searchRow}>
-
               <div className={styles.searchField}>
-                <label>Địa chỉ</label>
-                <input type="text" defaultValue="45 ĐƯỜNG NGUYỄN TRÃI" />
+                <label>Địa điểm</label>
+                <input type="text" placeholder="Bạn muốn đi đâu?" defaultValue="45 Nguyễn Trãi, Hà Nội" />
               </div>
-
+              <div className={styles.searchDivider}></div>
               <div className={styles.searchField}>
-                <label>Check in</label>
-                <input type="text" defaultValue="06 AUGUST, 2024" />
+                <label>Nhận phòng</label>
+                <input type="text" defaultValue="06 Aug, 2024" />
               </div>
-
+              <div className={styles.searchDivider}></div>
               <div className={styles.searchField}>
-                <label>Check out</label>
-                <input type="text" defaultValue="07 AUGUST, 2024" />
+                <label>Trả phòng</label>
+                <input type="text" defaultValue="07 Aug, 2024" />
               </div>
-
               <button className={styles.searchBtn}>
-                SEARCH
+                <span>SEARCH</span>
               </button>
-
             </div>
           </div>
         </div>
@@ -57,69 +49,44 @@ export default function GuestHome() {
 
       {/* HOTEL SECTION */}
       <section className={styles.hotelSection}>
-        <h2 className={styles.sectionTitle}>KHÁCH SẠN</h2>
-
-        <div className={styles.tabs}>
-          <span className={styles.activeTab}>HOTELS</span>
-          <span>ISLANDS</span>
-          <span>CASTLES</span>
-          <span>TINY HOUSES</span>
-          <span>AMAZING POOLS</span>
-          <span>TREEHOUSES</span>
-          <span>TROPICAL</span>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Khám phá điểm đến</h2>
+          <div className={styles.filterTabs}>
+            <span className={styles.filterActive}>HOTELS</span>
+            <span>ISLANDS</span>
+            <span>CASTLES</span>
+            <span>TINY HOUSES</span>
+            <span>TREEHOUSES</span>
+          </div>
         </div>
 
         <div className={styles.hotelGrid}>
           {[
-            {
-              title: "CONTINENTAL HOTEL HÀ NỘI",
-              price: "$1900",
-              image: "/images/room1.jpg",
-            },
-            {
-              title: "CONTINENTAL HOTEL TUYÊN QUANG",
-              price: "$1500",
-              image: "/images/room2.jpg",
-            },
-            {
-              title: "CONTINENTAL HOTEL TP.HCM",
-              price: "$2100",
-              image: "/images/room3.jpg",
-            },
-            {
-              title: "CONTINENTAL HOTEL HÀ NỘI",
-              price: "$1800",
-              image: "/images/room4.jpg",
-            },
+            { title: "CONTINENTAL HANOI", price: "$1,900", image: "/images/room1.jpg" },
+            { title: "CONTINENTAL TUYEN QUANG", price: "$1,500", image: "/images/room2.jpg" },
+            { title: "CONTINENTAL TP.HCM", price: "$2,100", image: "/images/room3.jpg" },
+            { title: "CONTINENTAL HANOI LUX", price: "$1,800", image: "/images/room4.jpg" },
+            { title: "CONTINENTAL HANOI LUX", price: "$1,800", image: "/images/room4.jpg" },
+            { title: "CONTINENTAL HANOI", price: "$1,900", image: "/images/room1.jpg" },
           ].map((hotel, index) => (
             <div key={index} className={styles.card}>
-
               <div
                 className={styles.cardImage}
                 style={{ backgroundImage: `url(${hotel.image})` }}
-              ></div>
-
-              <div className={styles.cardOverlay}>
-                <div className={styles.cardContent}>
-                  <div>
-                    <p className={styles.cardTitle}>
-                      {hotel.title}
-                    </p>
-                    <p className={styles.cardPrice}>
-                      {hotel.price}
-                    </p>
-                  </div>
-
-                  <div className={styles.cardArrow}>→</div>
-                </div>
+              >
+                <div className={styles.priceBadge}>{hotel.price}</div>
               </div>
-
+              <div className={styles.cardInfo}>
+                <div className={styles.cardText}>
+                  <h3>{hotel.title}</h3>
+                  <p>Luxury Stay & Spa</p>
+                </div>
+                <div className={styles.cardArrow}>→</div>
+              </div>
             </div>
           ))}
         </div>
-
       </section>
-
     </main>
   );
 }

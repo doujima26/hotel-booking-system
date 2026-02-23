@@ -1,139 +1,122 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import styles from "./Header.module.css";
 import api from "@/lib/api";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout, loading } = useAuth();
-
   const [showAccount, setShowAccount] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Hiệu ứng đổi màu header khi scroll
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (loading) return null;
 
-  // ===== ACCOUNT CLICK =====
-  const handleAccountClick = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) return;
-
-    try {
-      await api.get("/users/me");
-
-      setShowAccount(true);
-
-    } catch (error: any) {
-      console.error(
-        error.response?.data?.detail || "Không thể lấy thông tin"
-      );
-    }
-  };
-
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles.logo}>
-          Continental.com
+      <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+        <div className={styles.container}>
+          <div className={styles.logo} onClick={() => router.push("/")}>
+            Continental<span>.com</span>
+          </div>
+
+          <div className={styles.searchBox}>
+            <span className={styles.searchIcon}></span>
+            <input className={styles.searchInput} placeholder="Tìm kiếm điểm đến..." />
+          </div>
+
+          <nav className={styles.nav}>
+            <Link href="/" className={`${styles.link} ${pathname === "/" ? styles.active : ""}`}>
+              Trang chủ
+            </Link>
+
+            {/* ===== GUEST ===== */}
+            {!user && (
+              <>
+                <Link href="/hotel" className={styles.link}>Khách sạn</Link>
+                <Link href="/login" className={styles.link}>Đăng nhập</Link>
+                <Link href="/register" className={styles.registerBtn}>Đăng ký</Link>
+              </>
+            )}
+
+            {/* ===== USER ===== */}
+            {user?.role === "user" && (
+              <>
+                <Link href="/hotel" className={styles.link}>Khách sạn</Link>
+                <Link href="/user/my-bookings" className={styles.link}>Đặt phòng</Link>
+                <button className={styles.accountBtn} onClick={() => setShowAccount(true)}>
+                  <div className={styles.avatarMini}>
+                    <img src="/images/avt.png" alt="avt" />
+                  </div>
+                  Tài khoản
+                </button>
+              </>
+            )}
+
+            {/* ===== ADMIN / STAFF ===== */}
+            {(user?.role === "admin" || user?.role === "staff") && (
+              <>
+                <Link href="/admin/invoices" className={styles.link}>Quản lý hóa đơn</Link>
+                <Link href="/admin/rooms" className={styles.link}>Quản lý phòng</Link>
+
+                
+                <button className={styles.accountBtn} onClick={() => setShowAccount(true)}>
+                  <div className={styles.avatarMini}>
+                    <img src="/images/avt.png" alt="avt" />
+                  </div>
+                  Tài khoản
+                </button>
+              </>
+            )}
+          </nav>
         </div>
-
-        <div className={styles.searchBox}>
-          <input
-            className={styles.searchInput}
-            placeholder="Tìm kiếm..."
-          />
-        </div>
-
-        <nav className={styles.nav}>
-          <Link href="/" className={styles.link}>
-            Trang chủ
-          </Link>
-
-          {/* ===== GUEST ===== */}
-          {!user && (
-            <>
-              <Link href="#" className={styles.link}>Khách sạn</Link>
-              <Link href="#" className={styles.link}>Đặt phòng</Link>
-              <Link href="#" className={styles.link}>Dịch vụ</Link>
-
-              <Link href="/login" className={styles.link}>
-                Đăng nhập
-              </Link>
-              <Link href="/register" className={styles.registerBtn}>
-                Đăng ký
-              </Link>
-            </>
-          )}
-
-          {/* ===== USER ===== */}
-          {user?.role === "user" && (
-            <>
-              <Link href="#" className={styles.link}>Khách sạn</Link>
-              <Link href="/user/my-bookings" className={styles.link}>Đặt phòng</Link>
-              <Link href="#" className={styles.link}>Dịch vụ</Link>
-
-              <button
-                className={styles.accountBtn}
-                onClick={() => setShowAccount(true)}
-              >
-                Tài khoản
-              </button>
-            </>
-          )}
-
-          {/* ===== ADMIN ===== */}
-          {user?.role === "admin" && (
-            <>
-              <Link href="/admin/invoices" className={styles.link}>
-                Hóa đơn
-              </Link>
-
-              <Link href="/admin/rooms" className={styles.link}>
-                Phòng
-              </Link>
-
-              <Link href="/admin/services" className={styles.link}>
-                Dịch vụ
-              </Link>
-
-              <Link href="/admin/staff" className={styles.link}>
-                Nhân viên
-              </Link>
-
-              <button
-                className={styles.accountBtn}
-                onClick={() => setShowAccount(true)}
-              >
-                Tài khoản
-              </button>
-            </>
-          )}
-        </nav>
       </header>
 
       {/* ===== ACCOUNT POPUP ===== */}
       {showAccount && user && (
-        <div className={styles.overlay}>
-          <div className={styles.accountCard}>
-
-            <div className={styles.accountHeader}>
-              Thông tin tài khoản cá nhân
-            </div>
-
-            <div className={styles.accountBody}>
-              <div className={styles.avatar}>
+        <div className={styles.overlay} onClick={() => setShowAccount(false)}>
+          <div className={styles.accountCard} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setShowAccount(false)}>✕</button>
+            
+            <div className={styles.cardHeader}>
+              <div className={styles.coverPhoto}></div>
+              <div className={styles.profilePic}>
                 <img src="/images/avt.png" alt="avatar" />
               </div>
+            </div>
 
-              <div className={styles.info}>
-                <h2>{user.name}</h2>
-                <p><span>Vai trò:</span> {user.role}</p>
-                <p><span>DOB:</span> {user.dob}</p>
-                <p><span>Email:</span> {user.email}</p>
-                <p><span>SĐT:</span> {user.phone_number}</p>
+            <div className={styles.cardBody}>
+              <h2 className={styles.userName}>{user.name}</h2>
+              <p className={styles.userRole}>{user.role.toUpperCase()}</p>
+              
+              <div className={styles.infoGrid}>
+                <div className={styles.infoItem}>
+                  <label>Email</label>
+                  <p>{user.email}</p>
+                </div>
+                <div className={styles.infoItem}>
+                  <label>Số điện thoại</label>
+                  <p>{user.phone_number}</p>
+                </div>
+                <div className={styles.infoItem}>
+                  <label>Ngày sinh</label>
+                  <p>{user.dob || "Chưa cập nhật"}</p>
+                </div>
+              </div>
 
+              <div className={styles.actions}>
+                <button className={styles.editBtn}>Chỉnh sửa hồ sơ</button>
                 <button
                   className={styles.logoutBtn}
                   onClick={() => {
@@ -146,14 +129,6 @@ export default function Header() {
                 </button>
               </div>
             </div>
-
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowAccount(false)}
-            >
-              ✕
-            </button>
-
           </div>
         </div>
       )}

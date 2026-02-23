@@ -16,66 +16,45 @@ export default function RoomDetail() {
   const [room, setRoom] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("access_token")
-      : null;
-
   useEffect(() => {
     const fetchRoom = async () => {
       try {
         const res = await api.get(`/rooms/${id}`);
         setRoom(res.data);
       } catch (error: any) {
-        console.error(
-          error.response?.data?.detail || "Lỗi tải thông tin phòng"
-        );
+        console.error("Lỗi tải thông tin phòng");
       }
     };
-
-    if (id) {
-      fetchRoom();
-    }
+    if (id) fetchRoom();
   }, [id]);
 
   const calculateDays = () => {
     if (!checkIn || !checkOut) return 0;
     const inDate = new Date(checkIn);
     const outDate = new Date(checkOut);
-    return Math.floor(
-      (outDate.getTime() - inDate.getTime()) /
-        (1000 * 3600 * 24)
-    );
+    return Math.max(0, Math.floor((outDate.getTime() - inDate.getTime()) / (1000 * 3600 * 24)));
   };
 
-  const totalPrice =
-    room?.price && calculateDays() > 0
-      ? Number(room.price) * calculateDays()
-      : 0;
+  const nights = calculateDays();
+  const totalPrice = room?.price ? Number(room.price) * nights : 0;
 
   const handleBooking = async () => {
     if (!localStorage.getItem("access_token")) {
-      alert("Vui lòng đăng nhập");
+      alert("Vui lòng đăng nhập để đặt phòng");
       router.push("/login");
       return;
     }
-
     try {
       setLoading(true);
-
       await api.post("/bookings", {
         room_id: Number(id),
         check_in: checkIn,
         check_out: checkOut,
       });
-
       alert("Đặt phòng thành công!");
-      router.push("/");
-
+      router.push("/user/my-bookings");
     } catch (error: any) {
-      const message =
-        error.response?.data?.detail || "Đặt phòng thất bại";
-      alert(message);
+      alert(error.response?.data?.detail || "Đặt phòng thất bại");
     } finally {
       setLoading(false);
     }
@@ -85,79 +64,104 @@ export default function RoomDetail() {
 
   return (
     <div className={styles.wrapper}>
-
-      {/* ===== PHẦN TRÊN ===== */}
-      <div className={styles.topSection}>
-
-        {/* LEFT INFO */}
-        <div className={styles.infoCard}>
-          <h3>Thông tin phòng</h3>
-
-          <p><strong>Loại phòng:</strong> {room.room_type}</p>
-          <p><strong>Số phòng:</strong> {room.room_number}</p>
-          <p><strong>Giá:</strong> ${Number(room.price).toLocaleString()} / đêm</p>
-
-          <div className={styles.descriptionBox}>
-            <h4>Mô tả phòng:</h4>
-            <p>
-              Phòng mang đến không gian hiện đại và sang trọng,
-              được thiết kế tinh tế với đầy đủ tiện nghi.
-              Mang lại cảm giác thư giãn tuyệt đối cho kỳ nghỉ của bạn.
-            </p>
+      <div className={styles.container}>
+        {/* GALLERY SECTION */}
+        <section className={styles.gallery}>
+          <div className={styles.mainImage}>
+            <img src="/images/room3.jpg" alt="Main" />
           </div>
-        </div>
-
-        {/* RIGHT IMAGES */}
-        <div className={styles.imageLayout}>
-          <div className={styles.smallImages}>
-            <img src="/images/room1.jpg" />
-            <img src="/images/room2.jpg" />
+          <div className={styles.sideImages}>
+            <img src="/images/room1.jpg" alt="Detail 1" />
+            <img src="/images/room2.jpg" alt="Detail 2" />
           </div>
-          <img
-            src="/images/room3.jpg"
-            className={styles.largeImage}
-          />
-        </div>
+        </section>
 
+        {/* CONTENT GRID */}
+        <div className={styles.contentGrid}>
+          {/* LEFT: INFO */}
+          <div className={styles.infoSection}>
+            <div className={styles.headerInfo}>
+              <span className={styles.badge}>{room.room_type}</span>
+              <h1 className={styles.roomTitle}>Phòng {room.room_number}</h1>
+              <p className={styles.location}> Tầng 5 • Continental Hotel Group</p>
+            </div>
+
+            <div className={styles.amenities}>
+              <div className={styles.amenity}> Wi-Fi miễn phí</div>
+              <div className={styles.amenity}> Điều hòa 2 chiều</div>
+              <div className={styles.amenity}> Máy pha cà phê</div>
+              <div className={styles.amenity}> Bồn tắm riêng</div>
+            </div>
+
+            <div className={styles.description}>
+              <h3>Về căn phòng này</h3>
+              <p>
+                Trải nghiệm sự sang trọng tuyệt đối trong căn phòng được thiết kế tinh tế với 
+                nội thất cao cấp. Tận hưởng tầm nhìn tuyệt đẹp ra thành phố cùng với các tiện ích 
+                vượt trội, mang lại cho bạn một kỳ nghỉ thư giãn và đẳng cấp nhất.
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT: BOOKING & PAYMENT CARD */}
+          <aside className={styles.bookingSidebar}>
+            <div className={styles.paymentCard}>
+              <div className={styles.priceHeader}>
+                <span className={styles.price}>${Number(room.price).toLocaleString()}</span>
+                <span className={styles.unit}> / đêm</span>
+              </div>
+
+              <div className={styles.dateInfo}>
+                <div className={styles.dateBox}>
+                  <label>NHẬN PHÒNG</label>
+                  <span>{checkIn || "--/--/--"}</span>
+                </div>
+                <div className={styles.dateBox}>
+                  <label>TRẢ PHÒNG</label>
+                  <span>{checkOut || "--/--/--"}</span>
+                </div>
+              </div>
+
+              <div className={styles.paymentMethod}>
+                <label>PHƯƠNG THỨC THANH TOÁN</label>
+                <div className={styles.paymentTabs}>
+                  <span className={styles.activeTab}>Thẻ</span>
+                  <span>Ví điện tử</span>
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Số thẻ: 0000 0000 0000 0000" />
+                  <input type="text" placeholder="Tên chủ thẻ (In hoa không dấu)" />
+                </div>
+              </div>
+
+              <div className={styles.summary}>
+                <div className={styles.summaryLine}>
+                  <span>${Number(room.price).toLocaleString()} x {nights} đêm</span>
+                  <span>${totalPrice.toLocaleString()}</span>
+                </div>
+                <div className={styles.summaryLine}>
+                  <span>Phí dịch vụ</span>
+                  <span>$0</span>
+                </div>
+                <div className={`${styles.summaryLine} ${styles.total}`}>
+                  <span>Tổng thanh toán</span>
+                  <span>${totalPrice.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <button 
+                className={styles.bookBtn} 
+                onClick={handleBooking} 
+                disabled={loading || nights === 0}
+              >
+                {loading ? "ĐANG XỬ LÝ..." : "ĐẶT PHÒNG NGAY"}
+              </button>
+              
+              {nights === 0 && <p className={styles.warning}>* Vui lòng chọn ngày hợp lệ để đặt phòng</p>}
+            </div>
+          </aside>
+        </div>
       </div>
-
-      {/* ===== PHẦN DƯỚI ===== */}
-      <div className={styles.paymentCard}>
-
-        <div className={styles.paymentHeader}>
-          <h3>Chọn phương thức thanh toán</h3>
-
-          <div className={styles.tabs}>
-            <span className={styles.activeTab}>
-              Thẻ tín dụng/Ghi nợ
-            </span>
-            <span>Ví điện tử</span>
-            <span>Mobile banking</span>
-          </div>
-        </div>
-
-        <div className={styles.paymentForm}>
-          <input placeholder="Số thẻ" />
-          <input placeholder="Tên chủ thẻ" />
-          <input placeholder="Địa chỉ thanh toán" />
-        </div>
-
-        <div className={styles.bottomRow}>
-          <div className={styles.total}>
-            TỔNG: ${Number(totalPrice).toLocaleString()}
-          </div>
-
-          <button
-            className={styles.bookBtn}
-            onClick={handleBooking}
-            disabled={loading}
-          >
-            {loading ? "Đang đặt..." : "Đặt phòng"}
-          </button>
-        </div>
-
-      </div>
-
     </div>
   );
 }

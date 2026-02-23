@@ -8,7 +8,6 @@ import api from "@/lib/api";
 export default function RoomStatusPage() {
   const router = useRouter();
   const pathname = usePathname();
-
   const isEdit = pathname === "/admin/rooms";
   const isStatus = pathname === "/admin/rooms/status";
 
@@ -16,183 +15,134 @@ export default function RoomStatusPage() {
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("access_token")
-      : null;
-
-  // ==========================
-  // LOAD BOOKING DATA
-  // ==========================
   const loadBookings = async () => {
     try {
       const res = await api.get("/bookings/active");
-
       setBookings(res.data);
     } catch (error: any) {
-      alert(
-        error.response?.data?.detail || "Lỗi tải danh sách"
-      );
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    if (token) {
-      loadBookings();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
-    // ==========================
-  // CHECK IN
-  // ==========================
+
+  useEffect(() => { loadBookings(); }, []);
+
   const handleCheckIn = async () => {
     if (!selectedBooking) return;
-
     try {
-      await api.put(
-        `/bookings/${selectedBooking.booking_id}/check-in`
-      );
-
-      setBookings((prev) =>
-        prev.map((b) =>
-          b.booking_id === selectedBooking.booking_id
-            ? { ...b, booking_status: "checked_in" }
-            : b
-        )
-      );
-
-      setSelectedBooking({
-        ...selectedBooking,
-        booking_status: "checked_in",
-      });
-
+      await api.put(`/bookings/${selectedBooking.booking_id}/check-in`);
+      loadBookings();
+      setSelectedBooking(null);
       alert("Check-in thành công!");
-    } catch (error: any) {
-      alert(
-        error.response?.data?.detail ||
-          "Check-in thất bại"
-      );
-    }
+    } catch (error: any) { alert(error.response?.data?.detail || "Check-in thất bại"); }
   };
 
-  // ==========================
-  // CHECK OUT
-  // ==========================
   const handleCheckOut = async () => {
     if (!selectedBooking) return;
-
     try {
-      await api.put(
-        `/bookings/${selectedBooking.booking_id}/check-out`
-      );
-
-      setBookings((prev) =>
-        prev.map((b) =>
-          b.booking_id === selectedBooking.booking_id
-            ? { ...b, booking_status: "completed" }
-            : b
-        )
-      );
-
-      setSelectedBooking({
-        ...selectedBooking,
-        booking_status: "completed",
-      });
-
+      await api.put(`/bookings/${selectedBooking.booking_id}/check-out`);
+      loadBookings();
+      setSelectedBooking(null);
       alert("Check-out thành công!");
-    } catch (error: any) {
-      alert(
-        error.response?.data?.detail ||
-          "Check-out thất bại"
-      );
-    }
+    } catch (error: any) { alert(error.response?.data?.detail || "Check-out thất bại"); }
   };
 
-  if (loading) return <p>Đang tải...</p>;
+  if (loading) return (
+    <div className={styles.loading}>
+      <div className={styles.spinner}></div>
+      <p>Đang tải dữ liệu...</p>
+    </div>
+  );
 
   return (
-    <div className={styles.wrapper}>
-      {/* HEADER */}
-      <div className={styles.headerCard}>
-        <div className={styles.headerTitle}>
-          Trạng thái phòng
+    <div className={styles.adminWrapper}>
+      {/* HEADER SECTION - Đồng bộ với trang AdminRooms */}
+      <div className={styles.headerArea}>
+        <div>
+          <h1 className={styles.pageTitle}>Quản lý trạng thái phòng</h1>
+          <p className={styles.pageSubtitle}>Theo dõi danh sách khách đang chờ check-in hoặc check-out</p>
         </div>
 
-        <div className={styles.headerButtons}>
+        <div className={styles.tabGroup}>
           <button
-            className={
-              isStatus
-                ? styles.headerBtnDark
-                : styles.headerBtnLight
-            }
-            onClick={() =>
-              router.push("/admin/rooms/status")
-            }
+            className={isStatus ? styles.activeTab : styles.tab}
+            onClick={() => router.push("/admin/rooms/status")}
           >
             Trạng thái phòng
           </button>
-
           <button
-            className={
-              isEdit
-                ? styles.headerBtnDark
-                : styles.headerBtnLight
-            }
-            onClick={() =>
-              router.push("/admin/rooms")
-            }
+            className={isEdit ? styles.activeTab : styles.tab}
+            onClick={() => router.push("/admin/rooms")}
           >
             Chỉnh sửa phòng
           </button>
         </div>
       </div>
 
-      {/* CARD LIST */}
-      <div className={styles.grid}>
-        {bookings.map((booking) => (
-          <div
-            key={booking.booking_id}
-            className={`${styles.card} ${
-              selectedBooking?.booking_id ===
-              booking.booking_id
-                ? styles.selected
-                : ""
-            }`}
-            onClick={() => setSelectedBooking(booking)}
+      {/* ACTION BAR */}
+      <div className={styles.actionBar}>
+        <div className={styles.selectedInfo}>
+          {selectedBooking ? (
+            <p>Đang chọn: <strong>Phòng {selectedBooking.room_number}</strong> - {selectedBooking.customer_name}</p>
+          ) : (
+            <p>Vui lòng chọn một phòng để thực hiện thao tác</p>
+          )}
+        </div>
+        <div className={styles.actionButtons}>
+          <button
+            className={styles.checkInBtn}
+            disabled={!selectedBooking || selectedBooking.booking_status !== "confirmed"}
+            onClick={handleCheckIn}
           >
-            <p><strong>Khách:</strong> {booking.customer_name}</p>
-            <p><strong>Phòng:</strong> {booking.room_number}</p>
-            <p><strong>Check-in:</strong> {booking.check_in}</p>
-            <p><strong>Check-out:</strong> {booking.check_out}</p>
-          </div>
-        ))}
+            Xác nhận Check-in
+          </button>
+          <button
+            className={styles.checkOutBtn}
+            disabled={!selectedBooking || selectedBooking.booking_status !== "checked_in"}
+            onClick={handleCheckOut}
+          >
+            Xác nhận Check-out
+          </button>
+        </div>
       </div>
 
-      {/* ACTION BUTTONS */}
-      <div className={styles.actions}>
-        <button
-          className={styles.checkInBtn}
-          disabled={
-            !selectedBooking ||
-            selectedBooking.booking_status !== "confirmed"
-          }
-          onClick={handleCheckIn}
-        >
-          CHECK IN
-        </button>
+      {/* GRID LIST */}
+      <div className={styles.grid}>
+        {bookings.length === 0 ? (
+          <div className={styles.emptyState}>Hiện không có lượt đặt phòng nào đang hoạt động.</div>
+        ) : (
+          bookings.map((booking) => (
+            <div
+              key={booking.booking_id}
+              className={`${styles.card} ${selectedBooking?.booking_id === booking.booking_id ? styles.selected : ""}`}
+              onClick={() => setSelectedBooking(booking)}
+            >
+              <div className={styles.cardHeader}>
+                <span className={styles.roomLabel}>Phòng {booking.room_number}</span>
+                <span className={`${styles.statusBadge} ${styles[booking.booking_status]}`}>
+                  {booking.booking_status === 'confirmed' ? 'Chờ khách' : 'Đã nhận phòng'}
+                </span>
+              </div>
+              
+              <div className={styles.cardBody}>
+                <h3 className={styles.guestName}>{booking.customer_name}</h3>
+                <div className={styles.infoLine}>
+                  <span>🕒 Nhận:</span>
+                  <span>{new Date(booking.check_in).toLocaleDateString('vi-VN')}</span>
+                </div>
+                <div className={styles.infoLine}>
+                  <span>🕒 Trả:</span>
+                  <span>{new Date(booking.check_out).toLocaleDateString('vi-VN')}</span>
+                </div>
+              </div>
 
-        <button
-          className={styles.checkOutBtn}
-          disabled={
-            !selectedBooking ||
-            selectedBooking.booking_status !== "checked_in"
-          }
-          onClick={handleCheckOut}
-        >
-          CHECK OUT
-        </button>
+              <div className={styles.cardFooter}>
+                <span className={styles.bookingId}>ID: #{booking.booking_id}</span>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
