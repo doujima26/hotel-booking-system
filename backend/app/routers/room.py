@@ -1,3 +1,6 @@
+from http.client import HTTPException
+
+from app.models.room import Room
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
@@ -77,3 +80,12 @@ def get_available_rooms(
         check_in,
         check_out
     )
+
+@router.get("/{room_id}")
+def get_room(room_id: int, db: Session = Depends(get_db)):
+    room = db.query(Room).filter(Room.room_id == room_id).first()
+
+    if not room:
+        raise HTTPException(status_code=404, detail="Không tìm thấy phòng")
+
+    return room

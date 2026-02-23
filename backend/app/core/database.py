@@ -1,13 +1,12 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
-load_dotenv()  # dùng cho local
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Nếu không có DATABASE_URL thì build từ từng biến
 if not DATABASE_URL:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -30,3 +29,13 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine,
 )
+
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

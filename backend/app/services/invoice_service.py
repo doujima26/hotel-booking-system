@@ -23,10 +23,12 @@ def get_user_invoices_service(db: Session, user_id: int):
             Booking.check_out,
             Invoice.total_amount,
             Invoice.status,
-            Invoice.issued_at
+            Invoice.issued_at,
+             User.name.label("customer_name")
         )
         .join(Booking, Invoice.booking_id == Booking.booking_id)
         .join(Room, Booking.room_id == Room.room_id)
+        .join(User, Booking.user_id == User.user_id)
         .filter(Booking.user_id == user_id)
         .order_by(Invoice.issued_at.desc())
         .all()
@@ -157,10 +159,12 @@ async def confirm_invoice_service(
             Booking.check_out,
             Invoice.total_amount,
             Invoice.status,
-            Invoice.issued_at
+            Invoice.issued_at,
+            User.name.label("customer_name")
         )
         .join(Booking, Invoice.booking_id == Booking.booking_id)
         .join(Room, Booking.room_id == Room.room_id)
+        .join(User, Booking.user_id == User.user_id)
         .filter(Invoice.invoice_id == invoice_id)
         .first()
     )

@@ -40,25 +40,22 @@ export default function AdminInvoices() {
   // ==========================
   // CONFIRM INVOICE
   // ==========================
-    const confirmInvoice = async (invoiceId: number) => {
-      try {
-        await api.put(`/invoices/${invoiceId}/confirm`);
+  const confirmInvoice = async (invoiceId: number) => {
+    try {
+      const res = await api.put(`/invoices/${invoiceId}/confirm`);
 
-        // Update state ngay lập tức
-        setInvoices((prev) =>
-          prev.map((invoice) =>
-            invoice.invoice_id === invoiceId
-              ? { ...invoice, status: "paid" }
-              : invoice
-          )
-        );
+      setInvoices((prev) =>
+        prev.map((invoice) =>
+          invoice.invoice_id === invoiceId
+            ? res.data   // dùng dữ liệu backend trả về
+            : invoice
+        )
+      );
 
-      } catch (error: any) {
-        const message =
-          error.response?.data?.detail || "Xác nhận thất bại";
-        alert(message);
-      }
-    };
+    } catch (error: any) {
+      alert(error.response?.data?.detail || "Xác nhận thất bại");
+    }
+  };
 
   if (loading) return <p>Đang tải...</p>;
 

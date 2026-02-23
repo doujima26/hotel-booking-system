@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "./RoomStatus.module.css";
+import api from "@/lib/api";
 
 export default function RoomStatusPage() {
   const router = useRouter();
@@ -25,48 +26,34 @@ export default function RoomStatusPage() {
   // ==========================
   const loadBookings = async () => {
     try {
-        const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/bookings/active`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await api.get("/bookings/active");
+
+      setBookings(res.data);
+    } catch (error: any) {
+      alert(
+        error.response?.data?.detail || "Lỗi tải danh sách"
       );
-
-      const data = await res.json();
-      if (!res.ok) throw new Error();
-
-      setBookings(data);
-    } catch {
-      alert("Lỗi tải danh sách");
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
-    if (token) loadBookings();
-  }, []);
-
-  // ==========================
+    if (token) {
+      loadBookings();
+    } else {
+      setLoading(false);
+    }
+  }, [token]);
+    // ==========================
   // CHECK IN
   // ==========================
   const handleCheckIn = async () => {
     if (!selectedBooking) return;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/bookings/${selectedBooking.booking_id}/check-in`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      await api.put(
+        `/bookings/${selectedBooking.booking_id}/check-in`
       );
-
-      if (!res.ok) throw new Error();
 
       setBookings((prev) =>
         prev.map((b) =>
@@ -82,8 +69,11 @@ export default function RoomStatusPage() {
       });
 
       alert("Check-in thành công!");
-    } catch {
-      alert("Check-in thất bại");
+    } catch (error: any) {
+      alert(
+        error.response?.data?.detail ||
+          "Check-in thất bại"
+      );
     }
   };
 
@@ -94,17 +84,9 @@ export default function RoomStatusPage() {
     if (!selectedBooking) return;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/bookings/${selectedBooking.booking_id}/check-out`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      await api.put(
+        `/bookings/${selectedBooking.booking_id}/check-out`
       );
-
-      if (!res.ok) throw new Error();
 
       setBookings((prev) =>
         prev.map((b) =>
@@ -120,8 +102,11 @@ export default function RoomStatusPage() {
       });
 
       alert("Check-out thành công!");
-    } catch {
-      alert("Check-out thất bại");
+    } catch (error: any) {
+      alert(
+        error.response?.data?.detail ||
+          "Check-out thất bại"
+      );
     }
   };
 
