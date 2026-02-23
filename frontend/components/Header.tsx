@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import styles from "./Header.module.css";
+import api from "@/lib/api";
 
 export default function Header() {
   const router = useRouter();
@@ -20,22 +21,14 @@ export default function Header() {
     if (!token) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error("Không thể lấy thông tin");
-      }
+      await api.get("/users/me");
 
       setShowAccount(true);
 
-    } catch (err) {
-      console.error(err);
+    } catch (error: any) {
+      console.error(
+        error.response?.data?.detail || "Không thể lấy thông tin"
+      );
     }
   };
 

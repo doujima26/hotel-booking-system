@@ -1,31 +1,32 @@
 import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import DeclarativeBase
-from app.core.config import settings
+from dotenv import load_dotenv
 
-#ket noi database postgres
+load_dotenv()  # dùng cho local
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# tao engine ket noi den database
-engine = create_engine(settings.DATABASE_URL)
+# Nếu không có DATABASE_URL thì build từ từng biến
+if not DATABASE_URL:
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")
+    DB_HOST = os.getenv("DB_HOST")
+    DB_PORT = os.getenv("DB_PORT")
+    DB_NAME = os.getenv("DB_NAME")
 
-# tao sesion local
-SessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False
+    DATABASE_URL = (
+        f"postgresql://{DB_USER}:{DB_PASSWORD}"
+        f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
 )
 
-#base class cho model
-class Base(DeclarativeBase):
-    pass
-
-#dependency dung cho fastapi
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)

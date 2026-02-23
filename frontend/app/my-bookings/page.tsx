@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./MyBookings.module.css";
 import { useRouter } from "next/navigation";
+import api from "@/lib/api";
 
 export default function MyBookings() {
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -39,33 +40,21 @@ export default function MyBookings() {
     return {};
   };
 
-  // ==============================
-  // FETCH DATA
-  // ==============================
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/invoices/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const res = await api.get("/invoices/me");
+        setInvoices(res.data);
+      } catch (error: any) {
+        console.error(
+          error.response?.data?.detail || "Lỗi tải hóa đơn"
         );
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail);
-
-        setInvoices(data);
-      } catch (err) {
-        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (token) fetchInvoices();
+    fetchInvoices();
   }, []);
 
   if (loading) return <p>Đang tải...</p>;

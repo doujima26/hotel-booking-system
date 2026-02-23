@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "./AdminRooms.module.css";
+import api from "@/lib/api";
 
 export default function AdminRooms() {
   const [rooms, setRooms] = useState<any[]>([]);
@@ -34,20 +35,10 @@ export default function AdminRooms() {
   // ==============================
   const loadRooms = async () => {
     try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/rooms/get_my_branch_rooms`,
-          {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) throw new Error("Không thể tải phòng");
-
-      setRooms(data);
-    } catch (err) {
+      const res = await api.get("/rooms/get_my_branch_rooms");
+      setRooms(res.data);
+    } catch (error) {
+      console.error(error);
       alert("Lỗi tải danh sách phòng");
     }
   };
@@ -109,28 +100,20 @@ export default function AdminRooms() {
     if (!validate()) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          room_number: roomNumber,
-          room_type: roomType,
-          price: Number(price),
-          status: "available",
-        }),
+      await api.post("/rooms", {
+        room_number: roomNumber,
+        room_type: roomType,
+        price: Number(price),
+        status: "available",
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail);
 
       alert("Tạo phòng thành công!");
       resetForm();
       loadRooms();
-    } catch (err: any) {
-      alert(err.message);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail || "Tạo phòng thất bại";
+      alert(message);
     }
   };
 
@@ -146,31 +129,20 @@ export default function AdminRooms() {
         (r) => r.room_id === selectedId
       );
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/rooms/${selectedId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            room_number: roomNumber,
-            room_type: roomType,
-            price: Number(price),
-            status: selectedRoom?.status || "available",
-          }),
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail);
+      await api.put(`/rooms/${selectedId}`, {
+        room_number: roomNumber,
+        room_type: roomType,
+        price: Number(price),
+        status: selectedRoom?.status || "available",
+      });
 
       alert("Cập nhật thành công!");
       resetForm();
       loadRooms();
-    } catch (err: any) {
-      alert(err.message);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail || "Cập nhật thất bại";
+      alert(message);
     }
   };
 
@@ -183,23 +155,15 @@ export default function AdminRooms() {
       return;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/rooms/${selectedId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) throw new Error("Xóa thất bại");
+      await api.delete(`/rooms/${selectedId}`);
 
       alert("Xóa phòng thành công!");
       resetForm();
       loadRooms();
-    } catch (err: any) {
-      alert(err.message);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail || "Xóa thất bại";
+      alert(message);
     }
   };
 

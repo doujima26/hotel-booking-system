@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import styles from "./RoomDetail.module.css";
+import api from "@/lib/api";
 
 export default function RoomDetail() {
   const { id } = useParams();
@@ -22,11 +23,19 @@ export default function RoomDetail() {
 
   useEffect(() => {
     const fetchRoom = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms/${id}`);
-      const data = await res.json();
-      setRoom(data);
+      try {
+        const res = await api.get(`/rooms/${id}`);
+        setRoom(res.data);
+      } catch (error: any) {
+        console.error(
+          error.response?.data?.detail || "Lỗi tải thông tin phòng"
+        );
+      }
     };
-    fetchRoom();
+
+    if (id) {
+      fetchRoom();
+    }
   }, [id]);
 
   const calculateDays = () => {
@@ -45,7 +54,7 @@ export default function RoomDetail() {
       : 0;
 
   const handleBooking = async () => {
-    if (!token) {
+    if (!localStorage.getItem("access_token")) {
       alert("Vui lòng đăng nhập");
       router.push("/login");
       return;
@@ -54,26 +63,19 @@ export default function RoomDetail() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          room_id: Number(id),
-          check_in: checkIn,
-          check_out: checkOut,
-        }),
+      await api.post("/bookings", {
+        room_id: Number(id),
+        check_in: checkIn,
+        check_out: checkOut,
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail);
 
       alert("Đặt phòng thành công!");
       router.push("/");
-    } catch (err: any) {
-      alert(err.message);
+
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail || "Đặt phòng thất bại";
+      alert(message);
     } finally {
       setLoading(false);
     }

@@ -26,10 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://hotel-booking-system-wine-beta.vercel.app",
-        "https://hotel-booking-system-gcx84eu9g-hdung261204-8804s-projects.vercel.app",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

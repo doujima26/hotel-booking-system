@@ -4,6 +4,7 @@ import styles from "./login.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import api from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,27 +18,28 @@ const { login } = useAuth();
 const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const res = await api.post("/auth/login", {
+      email,
+      password,
+    });
 
-  const data = await res.json();
+    const data = res.data;
 
-  if (!res.ok) {
-    alert(data.detail);
-    return;
-  }
+    await login(data.access_token);
 
-  await login(data.access_token);
+    if (data.role === "admin") {
+      router.push("/admin");
+    } else if (data.role === "staff") {
+      router.push("/staff");
+    } else {
+      router.push("/");
+    }
 
-  if (data.role === "admin") {
-    router.push("/admin");
-  } else if (data.role === "staff") {
-    router.push("/staff");
-  } else {
-    router.push("/");
+  } catch (error: any) {
+    const message =
+      error.response?.data?.detail || "Đăng nhập thất bại";
+    alert(message);
   }
 };
 

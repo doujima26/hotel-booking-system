@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Database (production chỉ cần cái này)
+    # Database
     DATABASE_URL: str
 
     # Mail

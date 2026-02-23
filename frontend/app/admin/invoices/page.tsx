@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./AdminInvoices.module.css";
+import api from "@/lib/api";
 
 export default function AdminInvoices() {
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -20,64 +21,43 @@ export default function AdminInvoices() {
   // LOAD INVOICES
   // ==========================
   useEffect(() => {
-    if (!token) return;
-
     const loadInvoices = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/invoices/branch`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail);
-
-        setInvoices(data);
-      } catch (err: any) {
-        console.error(err);
-        alert(err.message);
+        const res = await api.get("/invoices/branch");
+        setInvoices(res.data);
+      } catch (error: any) {
+        const message =
+          error.response?.data?.detail || "Lỗi tải hóa đơn";
+        alert(message);
       } finally {
         setLoading(false);
       }
     };
 
     loadInvoices();
-  }, [token]);
+  }, []);
 
   // ==========================
   // CONFIRM INVOICE
   // ==========================
     const confirmInvoice = async (invoiceId: number) => {
-        try {
-            const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/invoices/${invoiceId}/confirm`,
-            {
-                method: "PUT",
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            }
-            );
+      try {
+        await api.put(`/invoices/${invoiceId}/confirm`);
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.detail);
+        // Update state ngay lập tức
+        setInvoices((prev) =>
+          prev.map((invoice) =>
+            invoice.invoice_id === invoiceId
+              ? { ...invoice, status: "paid" }
+              : invoice
+          )
+        );
 
-            // Update state ngay lập tức
-            setInvoices((prev) =>
-            prev.map((invoice) =>
-                invoice.invoice_id === invoiceId
-                ? { ...invoice, status: "paid" }
-                : invoice
-            )
-            );
-
-        } catch (err: any) {
-            alert(err.message);
-        }
+      } catch (error: any) {
+        const message =
+          error.response?.data?.detail || "Xác nhận thất bại";
+        alert(message);
+      }
     };
 
   if (loading) return <p>Đang tải...</p>;

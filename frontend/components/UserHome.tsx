@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/page.module.css";
+import api from "@/lib/api";
 
 export default function UserHome() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function UserHome() {
   const [rooms, setRooms] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
 
   const handleSearch = async () => {
     setError("");
@@ -34,19 +36,22 @@ export default function UserHome() {
     try {
       setLoading(true);
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/rooms/available/${hotelId}?check_in=${checkIn}&check_out=${checkOut}`
-        );
+      const res = await api.get(
+        `/rooms/available/${hotelId}`,
+        {
+          params: {
+            check_in: checkIn,
+            check_out: checkOut,
+          },
+        }
+      );
 
-      const data = await res.json();
+      setRooms(res.data);
 
-      if (!res.ok) {
-        throw new Error(data.detail || "Không tìm thấy phòng");
-      }
-
-      setRooms(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail || "Không tìm thấy phòng";
+      setError(message);
     } finally {
       setLoading(false);
     }
