@@ -1,7 +1,7 @@
 "use client";
 
 import GuestHome from "../components/GuestHome";
-import UserHome from "../components/UserHome";
+import UserHome from "./user/UserHome";
 import AdminHome from "./admin/AdminHome";
 import { useAuth } from "../context/AuthContext";
 
