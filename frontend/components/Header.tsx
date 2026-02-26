@@ -14,7 +14,6 @@ export default function Header() {
   const [showAccount, setShowAccount] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Hiệu ứng đổi màu header khi scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);

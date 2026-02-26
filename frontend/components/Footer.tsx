@@ -55,7 +55,7 @@ export default function Footer() {
             <span className={styles.icon}></span> contact@continental.com
           </div>
           <div className={styles.contactItem}>
-            <span className={styles.icon}></span> 45 Nguyễn Trãi, Hà Nội
+            <span className={styles.icon}></span> 120 Yên Lãng, Hà Nội
           </div>
         </div>
 

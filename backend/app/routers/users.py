@@ -5,7 +5,7 @@ from app.schemas.user import UserResponse
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-
+#API lay thong tin cua user dang dang nhap
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user

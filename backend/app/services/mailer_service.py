@@ -10,7 +10,7 @@ async def send_booking_confirmation_email(
     check_out: date,
     total_amount: float
 ):
-    # Định dạng lại ngày và tiền tệ để hiển thị đẹp hơn
+    
     formatted_amount = "{:,.0f}".format(total_amount).replace(",", ".")
     formatted_check_in = check_in.strftime("%d/%m/%Y")
     formatted_check_out = check_out.strftime("%d/%m/%Y")

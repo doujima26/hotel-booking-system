@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend - Hotel Booking System
 
-## Getting Started
+## 1. Tong quan
 
-First, run the development server:
+Day la ung dung frontend cho he thong dat phong khach san Continental, duoc xay dung bang Next.js (App Router).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Giao dien duoc tach theo vai tro:
+
+- `guest`: xem trang gioi thieu, thong tin khach san
+- `user`: tim phong trong, dat phong, xem lich su dat
+- `admin/staff`: quan ly phong, trang thai check-in/check-out, xac nhan hoa don
+
+---
+
+## 2. Cong nghe su dung
+
+- Next.js `16.1.6` (App Router)
+- React `19.2.3`
+- TypeScript
+- CSS Modules
+- Axios (goi API)
+- Context API (`AuthContext`) de quan ly phien dang nhap
+
+---
+
+## 3. Cau truc thu muc
+
+```text
+frontend/
+|-- app/
+|   |-- admin/
+|   |   |-- invoices/
+|   |   |-- rooms/
+|   |       |-- status/
+|   |-- hotel/
+|   |-- login/
+|   |-- register/
+|   |-- rooms/[id]/
+|   |-- user/
+|       |-- my-bookings/
+|-- components/
+|-- context/
+|   |-- AuthContext.tsx
+|-- lib/
+|   |-- api.ts
+|-- public/
+|-- package.json
+|-- tsconfig.json
+|-- next.config.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 4. Bien moi truong
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tao file `.env.local` trong thu muc `frontend`:
 
-## Learn More
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
 
-To learn more about Next.js, take a look at the following resources:
+Luu y:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Bien nay can co de dang ky tai khoan (`/register`) hoat dong dung.
+- Axios client trong `lib/api.ts` se dung bien tren lam `baseURL`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 5. Cai dat va chay local
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Mac dinh frontend chay tai: `http://localhost:3000`
+
+Yeu cau backend da khoi dong truoc do (API server).
+
+---
+
+## 6. Scripts
+
+```bash
+npm run dev    # chay moi truong phat trien
+npm run build  # build production
+npm run start  # chay ban build
+npm run lint   # kiem tra lint
+```
+
+---
+
+## 7. Cac route chinh
+
+| Route                                  | Mo ta                                                  |
+| -------------------------------------- | ------------------------------------------------------ |
+| `/`                                    | Trang home theo vai tro dang nhap (`guest/user/admin`) |
+| `/login`                               | Dang nhap                                              |
+| `/register`                            | Dang ky da buoc theo vai tro                           |
+| `/hotel`                               | Trang gioi thieu khach san                             |
+| `/rooms/[id]?checkIn=...&checkOut=...` | Chi tiet phong va dat phong                            |
+| `/user/my-bookings`                    | Lich su dat phong cua nguoi dung                       |
+| `/admin`                               | Trang tong quan admin                                  |
+| `/admin/invoices`                      | Quan ly hoa don chi nhanh                              |
+| `/admin/rooms`                         | CRUD phong trong chi nhanh                             |
+| `/admin/rooms/status`                  | Quan ly check-in/check-out theo booking                |
+| `/me`                                  | Trang debug thong tin user hien tai                    |
+
+---
+
+## 8. API endpoints frontend dang su dung
+
+- `POST /auth/login`
+- `POST /auth/register`
+- `GET /users/me`
+- `GET /rooms/available/{hotelId}`
+- `GET /rooms/{id}`
+- `POST /bookings`
+- `GET /invoices/me`
+- `GET /invoices/branch`
+- `PUT /invoices/{invoiceId}/confirm`
+- `GET /rooms/get_my_branch_rooms`
+- `POST /rooms`
+- `PUT /rooms/{id}`
+- `DELETE /rooms/{id}`
+- `GET /bookings/active`
+- `PUT /bookings/{bookingId}/check-in`
+- `PUT /bookings/{bookingId}/check-out`
+
+---
+
+## 9. Luong xac thuc
+
+- Token duoc luu trong `localStorage` voi key: `access_token`.
+- `lib/api.ts` tu dong gan header `Authorization: Bearer <token>` cho cac request.
+- `context/AuthContext.tsx` tai thong tin user khi app khoi dong.
+
+---
+
+## 10. Ghi chu phat trien
+
+- Kiem tra CORS o backend de frontend co the goi API tu `http://localhost:3000`.
+- Neu thay doi domain API, cap nhat `NEXT_PUBLIC_API_URL` va khoi dong lai frontend.

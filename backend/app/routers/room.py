@@ -24,7 +24,7 @@ router = APIRouter(
     tags=["Rooms"]
 )
 
-
+# API tao phong moi, chi admin moi su dung duoc
 @router.post("/", response_model=RoomResponse)
 def create_room(
     room_data: RoomCreate,
@@ -81,6 +81,7 @@ def get_available_rooms(
         check_out
     )
 
+#API lay thong tin chi tiet cua phong theo ID
 @router.get("/{room_id}")
 def get_room(room_id: int, db: Session = Depends(get_db)):
     room = db.query(Room).filter(Room.room_id == room_id).first()

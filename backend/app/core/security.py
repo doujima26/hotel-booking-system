@@ -20,7 +20,7 @@ pwd_context = CryptContext(
 )
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 5
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password) #tra ve mat khau da duoc hash

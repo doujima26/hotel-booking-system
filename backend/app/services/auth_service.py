@@ -8,6 +8,7 @@ from app.schemas.user import UserLogin
 from app.core.security import hash_password
 from app.core.security import verify_password, create_access_token
 
+# Ham dang ky user moi, co xu ly rieng cho tung role
 def register_user(db: Session, user_data: UserCreate):
     # check email ton tai
     existing_user = db.query(User).filter(User.email == user_data.email).first()
@@ -78,7 +79,7 @@ def register_user(db: Session, user_data: UserCreate):
 
     return new_user
 
-
+# Ham dang nhap, tra ve access token
 def login_user(db: Session, user_data: UserLogin):
     # Tim user theo email
     user = db.query(User).filter(User.email == user_data.email).first()

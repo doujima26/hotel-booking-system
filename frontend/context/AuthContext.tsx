@@ -26,9 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ==============================
-  // LOAD USER WHEN APP START
-  // ==============================
+//load user khi app khởi động, check token có hợp lệ không, nếu có thì load thông tin user vào context
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
@@ -52,9 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  // ==============================
-  // LOGIN
-  // ==============================
+//login
   const login = async (token: string) => {
     localStorage.setItem("access_token", token);
 
@@ -68,9 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // ==============================
-  // LOGOUT
-  // ==============================
+//logout
   const logout = () => {
     localStorage.removeItem("access_token");
     setUser(null);
